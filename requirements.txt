@@ -1,4 +1,18 @@
-#
+#Utilitites 
 numpy
 pandas
-  
+
+# FACE RECOGNITION
+scikit-learn
+dlib-bin
+#if github package want to use git+packeagelink syntax
+git+https://github.com/ageitgey/face_recognition_models
+setuptools<70.0.0
+
+supabase
+bcrypt
+
+segno
+pillow
+
+streamlit #for web app inbilt
