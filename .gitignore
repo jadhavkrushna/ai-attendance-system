@@ -6,3 +6,10 @@ __pycache__/
 .env
 .env.*
 !.env.example
+.vscode
+
+venv/
+
+.streamlit/
+
+dist/
