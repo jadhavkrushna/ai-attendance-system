@@ -1,5 +1,4 @@
 from src.database.config import supabase
-# pyrefly: ignore [missing-import]
 import bcrypt
 
 
