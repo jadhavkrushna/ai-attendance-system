@@ -3,15 +3,22 @@ import streamlit as st
 from src.components.footer import footer_dashboard
 from src.components.header import header_dashboard
 from src.ui.base_layout import style_background_dashboard, style_base_layout
+from src.database.db import teacher_login, create_teacher, check_teacher_exists
 
 
 # ---------------------------------------------------------------------------
-# Auth helpers – replace with real DB / hashing logic when ready
+# Auth helpers – connected to real DB logic
 # ---------------------------------------------------------------------------
 
 def login_teacher(username: str, password: str) -> bool:
     """Return True if credentials are valid, False otherwise."""
-    # TODO: validate against your database
+    try:
+        teacher = teacher_login(username, password)
+        if teacher:
+            st.session_state.teacher_data = teacher
+            return True
+    except Exception as e:
+        st.error(f"Login database error: {str(e)}")
     return False
 
 
@@ -21,8 +28,13 @@ def register_teacher(username: str, name: str, password: str, password_confirm: 
         return False, "All fields are required."
     if password != password_confirm:
         return False, "Passwords do not match."
-    # TODO: persist to your database
-    return True, f"Teacher '{name}' registered successfully!"
+    try:
+        if check_teacher_exists(username):
+            return False, "Username is already taken."
+        create_teacher(username, password, name)
+        return True, f"Teacher '{name}' registered successfully!"
+    except Exception as e:
+        return False, f"Registration database error: {str(e)}"
 
 
 # ---------------------------------------------------------------------------
@@ -50,8 +62,8 @@ def teacher_screen_login():
             st.rerun()
 
     st.header('Login using password')
-    st.space()
-    st.space()
+    st.write("")
+    st.write("")
 
     teacher_username = st.text_input("Enter username", placeholder='ananyaroy')
     teacher_pass = st.text_input("Enter password", type='password', placeholder="Enter password")
@@ -87,8 +99,8 @@ def teacher_screen_register():
             st.rerun()
 
     st.header('Register your teacher profile')
-    st.space()
-    st.space()
+    st.write("")
+    st.write("")
 
     teacher_username = st.text_input("Enter username", placeholder='Jameslebron_23')
     teacher_name = st.text_input("Enter name", placeholder='James Lebron')
