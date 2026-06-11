@@ -22,3 +22,7 @@ pillow
 
 # Web application
 streamlit
+
+#voice recognition
+librosa
+resemblyzer
