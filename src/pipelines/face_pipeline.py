@@ -36,8 +36,7 @@ def get_face_embeddings(image_np):
 
         encodings.append(np.array(face_descriptor))
     return encodings
- 
-#@st.cache_resource is used to cache the trained model so that it is not trained again and again
+
 @st.cache_resource
 def get_trained_model():
     X = []
@@ -58,7 +57,6 @@ def get_trained_model():
     if len(X) ==0:
         return 0
     
-    #clf as classifier
     clf = SVC(kernel='linear', probability=True, class_weight='balanced')
 
     try:
@@ -93,9 +91,9 @@ def predict_attendance(class_image_np):
 
     for encoding in encodings:
         if len(all_students)>= 2:
-            predicted_id = clf.predict([encoding])[0]
+            predicted_id= int(clf.predict([encoding])[0])
         else:
-            predicted_id = all_students[0]
+            predicted_id = int(all_students[0])
 
         student_embedding = X_train[y_train.index(predicted_id)]
 

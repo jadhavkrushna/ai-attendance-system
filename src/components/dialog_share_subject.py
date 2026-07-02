@@ -1,6 +1,5 @@
 import streamlit as st
 
-# pyrefly: ignore [missing-import]
 import segno
 import io
 
