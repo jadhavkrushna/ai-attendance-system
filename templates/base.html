@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}SnapClass | AI Powered Attendance System{% endblock %}</title>
+    <title>{% block title %}Fluentia | AI Powered Attendance System{% endblock %}</title>
     <!-- CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/app_logo.png') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/3d/logo.png') }}">
     <!-- FontAwesome & Fluent Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Chart.js -->
@@ -17,13 +17,13 @@
     <!-- Persistent Floating 3D Geometric Objects (Background Decoration) -->
     <div class="fluent-bg-shapes">
         <!-- Floating purple sphere (top left) -->
-        <img class="shape-3d" src="{{ url_for('static', filename='img/3d_sphere_purple.png') }}" style="top: 12%; left: 5%; width: 40px; animation-delay: 0s;">
+        <img class="shape-3d" src="{{ url_for('static', filename='img/3d/sphere.png') }}" style="top: 12%; left: 5%; width: 40px; animation-delay: 0s;">
         <!-- Floating purple cube (middle right) -->
-        <img class="shape-3d" src="{{ url_for('static', filename='img/3d_cube_purple.png') }}" style="top: 25%; right: 8%; width: 40px; animation-delay: 1.5s;">
+        <img class="shape-3d" src="{{ url_for('static', filename='img/3d/cube.png') }}" style="top: 25%; right: 8%; width: 40px; animation-delay: 1.5s;">
         <!-- Floating pink sphere (bottom right) -->
-        <img class="shape-3d" src="{{ url_for('static', filename='img/3d_sphere_pink.png') }}" style="bottom: 12%; right: 6%; width: 25px; animation-delay: 3.5s;">
+        <img class="shape-3d" src="{{ url_for('static', filename='img/3d/small_sphere.png') }}" style="bottom: 12%; right: 6%; width: 25px; animation-delay: 3.5s;">
         <!-- Floating purple sphere (bottom left) -->
-        <img class="shape-3d" src="{{ url_for('static', filename='img/3d_sphere_purple.png') }}" style="bottom: 18%; left: 5%; width: 35px; animation-delay: 2.2s;">
+        <img class="shape-3d" src="{{ url_for('static', filename='img/3d/sphere.png') }}" style="bottom: 18%; left: 5%; width: 35px; animation-delay: 2.2s;">
     </div>
 
     {% if session.get('user_id') %}
@@ -31,8 +31,8 @@
     <div class="app-container">
         <aside class="sidebar">
             <div class="sidebar-logo">
-                <img src="{{ url_for('static', filename='img/app_logo.png') }}" alt="Logo" style="height: 48px; border-radius: 12px;">
-                <div class="logo-text" style="font-size: 1.6rem; margin-left: 8px;">SnapClass</div>
+                <img src="{{ url_for('static', filename='img/3d/logo.png') }}" alt="Logo" style="height: 48px; border-radius: 12px;">
+                <div class="logo-text" style="font-size: 1.6rem; margin-left: 8px;">Fluentia</div>
             </div>
             
             <ul class="sidebar-menu">
@@ -93,7 +93,7 @@
                         <p>{{ session.get('role', 'Member') | capitalize }}</p>
                     </div>
                 </div>
-                <a href="/logout" class="btn-pill-pink" style="width: 100%; justify-content: center; padding: 10px; font-size: 0.9rem;">
+                <a href="/logout" class="btn-sidebar-logout">
                     <i class="fa-solid fa-right-from-bracket"></i> Logout
                 </a>
             </div>

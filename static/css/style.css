@@ -12,7 +12,7 @@
     --text-dark: #1E1B4B;
     --text-muted: #7E7C9C;
     --border-color: #EAE8FF;
-    
+
     /* Design tokens */
     --shadow-soft: 0 10px 30px rgba(91, 91, 214, 0.04), 0 2px 4px rgba(0, 0, 0, 0.01);
     --shadow-premium: 0 20px 48px rgba(91, 91, 214, 0.08), 0 4px 12px rgba(91, 91, 214, 0.02);
@@ -57,8 +57,13 @@ body {
 }
 
 @keyframes floatShape {
-    0% { transform: translateY(0px) rotate(0deg); }
-    100% { transform: translateY(-20px) rotate(8deg); }
+    0% {
+        transform: translateY(0px) rotate(0deg);
+    }
+
+    100% {
+        transform: translateY(-20px) rotate(8deg);
+    }
 }
 
 /* ---------------------------------------------------------------------------
@@ -156,6 +161,29 @@ body {
 .btn-pill-pink:hover {
     transform: translateY(-2px);
     box-shadow: 0 12px 24px rgba(255, 75, 145, 0.3);
+}
+
+.btn-sidebar-logout {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: rgba(255, 75, 145, 0.05);
+    color: #FF4B91;
+    border: 1px solid rgba(255, 75, 145, 0.15);
+    padding: 12px 20px;
+    border-radius: var(--radius-pill);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.9rem;
+    transition: all 0.25s;
+    width: 100%;
+}
+
+.btn-sidebar-logout:hover {
+    background: rgba(255, 75, 145, 0.09);
+    border-color: rgba(255, 75, 145, 0.3);
+    transform: translateY(-1px);
 }
 
 .btn-pill-outline {
@@ -268,7 +296,7 @@ body {
     object-fit: contain;
     display: block;
     filter: drop-shadow(0 12px 24px rgba(91, 91, 214, 0.18));
-    transition: transform 0.35s cubic-bezier(0.16,1,0.3,1);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .landing-portal-card:hover .avatar-container img {
@@ -330,9 +358,10 @@ body {
 }
 
 .sidebar-item.active a {
-    background: rgba(91, 91, 214, 0.08);
-    color: var(--primary);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white !important;
     font-weight: 700;
+    box-shadow: 0 8px 24px rgba(91, 91, 214, 0.15);
 }
 
 .sidebar-user-card {
@@ -719,7 +748,8 @@ body {
 }
 
 .bottom-branding strong {
-    color: #FF8F3D; /* APNA COLLEGE Yellow/Orange accent */
+    color: #4f98e7;
+    /* Accent color override */
 }
 
 /* ---------------------------------------------------------------------------
@@ -731,23 +761,23 @@ body {
         padding: 24px 10px;
         align-items: center;
     }
-    
+
     .sidebar-logo-text,
     .sidebar-user-card,
     .sidebar-item a span {
         display: none;
     }
-    
+
     .sidebar-item a {
         padding: 16px;
         justify-content: center;
     }
-    
+
     .main-content {
         margin-left: 80px;
         padding: 40px 30px;
     }
-    
+
     .landing-cards-container {
         grid-template-columns: 1fr;
     }

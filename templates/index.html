@@ -1,18 +1,22 @@
 {% extends "base.html" %}
 
-{% block title %}SnapClass | Where Learning Meets Creativity{% endblock %}
+{% block title %}Fluentia | Where Learning Meets Creativity{% endblock %}
 
 {% block guest_content %}
-<div style="min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; padding: 40px 80px; position: relative;">
-    
+<div
+    style="min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; padding: 40px 80px; position: relative;">
+
     <!-- Top Header / Navigation -->
     <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
         <div style="text-align: center;">
-            <img src="{{ url_for('static', filename='img/app_logo.png') }}" alt="SnapClass Logo" style="height: 64px; border-radius: 16px; box-shadow: 0 8px 24px rgba(91, 91, 214, 0.15); margin-bottom: 12px;">
-            <h1 style="font-family: 'Inter', sans-serif; font-size: 3.2rem; font-weight: 800; color: var(--text-dark); letter-spacing: -2px; line-height: 1; text-transform: uppercase;">
-                SNAP<br>CLASS
+            <img src="{{ url_for('static', filename='img/3d/logo.png') }}" alt="Fluentia Logo"
+                style="height: 64px; border-radius: 16px; box-shadow: 0 8px 24px rgba(91, 91, 214, 0.15); margin-bottom: 12px;">
+            <h1
+                style="font-family: 'Inter', sans-serif; font-size: 3.2rem; font-weight: 800; color: var(--text-dark); letter-spacing: -2px; line-height: 1; text-transform: uppercase;">
+                FLUENT<br>IA
             </h1>
-            <p style="color: var(--text-muted); font-size: 1.15rem; font-weight: 600; margin-top: 10px;">Where Learning Meets Creativity</p>
+            <p style="color: var(--text-muted); font-size: 1.15rem; font-weight: 600; margin-top: 10px;">Where Learning
+                Meets Creativity</p>
         </div>
     </div>
 
@@ -20,28 +24,38 @@
     <div class="landing-cards-container">
         <!-- Student Card -->
         <div class="glass-card landing-portal-card">
-            <h3 style="font-size: 1.45rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">I'm</h3>
-            <h3 style="font-size: 2.2rem; color: var(--text-dark); font-weight: 800; margin-top: -16px; margin-bottom: 24px;">Student</h3>
-            
+            <h3
+                style="font-size: 1.45rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+                I'm</h3>
+            <h3
+                style="font-size: 2.2rem; color: var(--text-dark); font-weight: 800; margin-top: -16px; margin-bottom: 24px;">
+                Student</h3>
+
             <div class="avatar-container">
-                <img src="{{ url_for('static', filename='img/avatar_student.png') }}" alt="Student Avatar">
+                <img src="{{ url_for('static', filename='img/3d/student.png') }}" alt="Student Avatar">
             </div>
 
-            <a href="/login" class="btn-pill" style="width: 80%; justify-content: center; font-size: 1rem; padding: 14px 28px;">
+            <a href="/login" class="btn-pill"
+                style="width: 80%; justify-content: center; font-size: 1rem; padding: 14px 28px;">
                 Student Portal <i class="fa-solid fa-arrow-right" style="margin-left: 8px;"></i>
             </a>
         </div>
 
         <!-- Teacher Card -->
         <div class="glass-card landing-portal-card">
-            <h3 style="font-size: 1.45rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">I'm</h3>
-            <h3 style="font-size: 2.2rem; color: var(--text-dark); font-weight: 800; margin-top: -16px; margin-bottom: 24px;">Teacher</h3>
+            <h3
+                style="font-size: 1.45rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+                I'm</h3>
+            <h3
+                style="font-size: 2.2rem; color: var(--text-dark); font-weight: 800; margin-top: -16px; margin-bottom: 24px;">
+                Teacher</h3>
 
             <div class="avatar-container">
-                <img src="{{ url_for('static', filename='img/avatar_teacher.png') }}" alt="Teacher Avatar">
+                <img src="{{ url_for('static', filename='img/3d/teacher.png') }}" alt="Teacher Avatar">
             </div>
 
-            <a href="/login" class="btn-pill" style="width: 80%; justify-content: center; font-size: 1rem; padding: 14px 28px;">
+            <a href="/login" class="btn-pill"
+                style="width: 80%; justify-content: center; font-size: 1rem; padding: 14px 28px;">
                 Teacher Portal <i class="fa-solid fa-arrow-right" style="margin-left: 8px;"></i>
             </a>
         </div>
@@ -50,21 +64,29 @@
     <!-- Background 3D floating icons -->
     <div class="fluent-bg-shapes">
         <!-- Charts tablet (top-left) -->
-        <img class="shape-3d" src="{{ url_for('static', filename='img/icon_charts_tablet.png') }}" style="top: 8%; left: 6%; width: 130px; animation-delay: 0s;">
+        <img class="shape-3d" src="{{ url_for('static', filename='img/3d/analytics.svg') }}"
+            style="top: 8%; left: 6%; width: 130px; animation-delay: 0s;">
         <!-- QR Scanner (top-right) -->
-        <img class="shape-3d" src="{{ url_for('static', filename='img/icon_qr_scanner.png') }}" style="top: 8%; right: 6%; width: 120px; animation-delay: 1.2s;">
+        <img class="shape-3d" src="{{ url_for('static', filename='img/3d/qr_code_scanner.svg') }}"
+            style="top: 8%; right: 6%; width: 120px; animation-delay: 1.2s;">
         <!-- ID Card (bottom-left) -->
-        <img class="shape-3d" src="{{ url_for('static', filename='img/icon_id_card.png') }}" style="bottom: 12%; left: 6%; width: 110px; animation-delay: 2.2s;">
+        <img class="shape-3d" src="{{ url_for('static', filename='img/3d/photo_camera.svg') }}"
+            style="bottom: 12%; left: 6%; width: 110px; animation-delay: 2.2s;">
         <!-- Cloud DB (bottom-right) -->
-        <img class="shape-3d" src="{{ url_for('static', filename='img/icon_cloud_database.png') }}" style="bottom: 12%; right: 6%; width: 120px; animation-delay: 3s;">
+        <img class="shape-3d" src="{{ url_for('static', filename='img/3d/psychology.svg') }}"
+            style="bottom: 12%; right: 6%; width: 120px; animation-delay: 3s;">
         <!-- Small floating accent dots -->
-        <div style="position: absolute; top: 35%; left: 22%; width: 18px; height: 18px; border-radius: 50%; background: var(--accent); opacity: 0.45; filter: blur(1px);"></div>
-        <div style="position: absolute; bottom: 40%; right: 25%; width: 14px; height: 14px; border-radius: 50%; background: var(--secondary); opacity: 0.55; filter: blur(1px);"></div>
+        <div
+            style="position: absolute; top: 35%; left: 22%; width: 18px; height: 18px; border-radius: 50%; background: var(--accent); opacity: 0.45; filter: blur(1px);">
+        </div>
+        <div
+            style="position: absolute; bottom: 40%; right: 25%; width: 14px; height: 14px; border-radius: 50%; background: var(--secondary); opacity: 0.55; filter: blur(1px);">
+        </div>
     </div>
 
     <!-- Bottom Footer -->
     <div class="bottom-branding">
-        Created with <i class="fa-solid fa-heart" style="color: var(--danger);"></i> by <strong>APNA COLLEGE</strong>
+        designed with<i class="fa-solid fa-heart" style="color: var(--danger);"></i> by <strong>KRUSHNA JADHAV</strong>
     </div>
 
 </div>

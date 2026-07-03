@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %}Reports & Analytics | SnapClass{% endblock %}
+{% block title %}Reports & Analytics | Fluentia{% endblock %}
 
 {% block content %}
 <div>
     <div class="content-header" style="display: flex; align-items: center; gap: 20px;">
-        <img src="{{ url_for('static', filename='img/icon_reports.png') }}" alt="Analytics" style="height: 80px; width: auto; filter: drop-shadow(0 8px 20px rgba(91,91,214,0.2)); flex-shrink: 0;">
+        <img src="{{ url_for('static', filename='img/3d/assessment.svg') }}" alt="Analytics" style="height: 80px; width: auto; filter: drop-shadow(0 8px 20px rgba(91,91,214,0.2)); flex-shrink: 0;">
         <div class="content-title">
             <h2>Reports & Analytics</h2>
             <p>Review course metrics and compare attendance rates.</p>
@@ -33,7 +33,7 @@
         <!-- Key Performance Card (Reports spec decoration) -->
         <div class="glass-card" style="padding: 32px; border-radius: 20px; background: rgba(255, 255, 255, 0.85); box-shadow: var(--shadow-soft); display: flex; flex-direction: column; justify-content: space-between; position: relative;">
             <div>
-                <img src="{{ url_for('static', filename='img/3d_clipboard_check.png') }}" style="height: 64px; width: auto; position: absolute; top: 24px; right: 24px; filter: drop-shadow(0 6px 12px rgba(91, 91, 214, 0.1));" alt="Check">
+                <img src="{{ url_for('static', filename='img/3d/check_circle.svg') }}" style="height: 64px; width: auto; position: absolute; top: 24px; right: 24px; filter: drop-shadow(0 6px 12px rgba(91, 91, 214, 0.1));" alt="Check">
                 <h4 style="color: var(--text-dark); font-size: 1.15rem; font-weight: 700; margin-bottom: 12px; padding-right: 70px;"><i class="fa-solid fa-square-poll-vertical" style="margin-right: 8px; color: var(--primary);"></i> Academic Summary</h4>
                 <p style="color: var(--text-muted); font-size: 0.85rem; font-weight: 500; line-height: 1.4; margin-bottom: 24px; padding-right: 40px;">Biometric attendance rates are monitored daily. Defaulters fall below the 75.0% threshold.</p>
             </div>
@@ -59,7 +59,7 @@
 
     <!-- Reports Page Specific 3D Book Stack Background Shape -->
     <div class="fluent-bg-shapes">
-        <img class="shape-3d" src="{{ url_for('static', filename='img/icon_charts_tablet.png') }}" style="bottom: 8%; right: 6%; width: 130px; animation-delay: 1s;">
+        <img class="shape-3d" src="{{ url_for('static', filename='img/3d/analytics.svg') }}" style="bottom: 8%; right: 6%; width: 130px; animation-delay: 1s;">
     </div>
 </div>
 

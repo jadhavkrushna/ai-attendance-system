@@ -1,24 +1,27 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard | SnapClass{% endblock %}
+{% block title %}Dashboard | Fluentia{% endblock %}
 
 {% block content %}
 
 {% if session.get('role') == 'student' %}
 <!-- Student Dashboard Layout matching Image 1 EXACTLY -->
-<div style="position: relative; min-height: 80vh; display: flex; flex-direction: column; justify-content: space-between;">
-    
+<div
+    style="position: relative; min-height: 80vh; display: flex; flex-direction: column; justify-content: space-between;">
+
     <!-- Top Header Block -->
     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px;">
         <div class="content-title">
-            <h2 style="font-size: 2.2rem; font-weight: 800; color: var(--text-dark); letter-spacing: -0.5px; display: flex; align-items: center; gap: 8px;">
+            <h2
+                style="font-size: 2.2rem; font-weight: 800; color: var(--text-dark); letter-spacing: -0.5px; display: flex; align-items: center; gap: 8px;">
                 Welcome Back, {{ session.get('name') }}! 👋
-                <img src="{{ url_for('static', filename='img/icon_student_teacher.png') }}" style="height: 48px; width: auto; vertical-align: middle; margin-left: 8px; filter: drop-shadow(0 4px 10px rgba(91, 91, 214, 0.15));" alt="Students">
             </h2>
-            <p style="color: var(--text-muted); font-size: 0.95rem; font-weight: 600; margin-top: 4px;">Here is the AI biometric class report for today.</p>
+            <p style="color: var(--text-muted); font-size: 0.95rem; font-weight: 600; margin-top: 4px;">Here is the AI
+                biometric class report for today.</p>
         </div>
         <div>
-            <button onclick="openEnrollmentModal()" class="btn-pill" style="padding: 12px 24px; font-size: 0.9rem; border-radius: 16px; box-shadow: none;">
+            <button onclick="openEnrollmentModal()" class="btn-pill"
+                style="padding: 12px 24px; font-size: 0.9rem; border-radius: 16px; box-shadow: none;">
                 <i class="fa-solid fa-plus" style="margin-right: 6px;"></i> Join A Class
             </button>
         </div>
@@ -27,8 +30,10 @@
     <!-- Metrics Cards Grid (Image 1 Style) -->
     <div class="metrics-grid" style="margin-bottom: 30px; gap: 24px;">
         <div class="metric-card" style="padding: 20px 24px; border-radius: 20px; border-color: rgba(91,91,214,0.06);">
-            <div style="width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; background: rgba(91,91,214,0.05);">
-                <img src="{{ url_for('static', filename='img/3d_folder_metric.png') }}" style="height: 48px; width: auto;" alt="Enrolled icon">
+            <div
+                style="width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; background: rgba(91,91,214,0.05);">
+                <img src="{{ url_for('static', filename='img/3d/menu_book.svg') }}" style="height: 48px; width: auto;"
+                    alt="Enrolled icon">
             </div>
             <div class="metric-data">
                 <p style="color: var(--text-muted); font-size: 0.8rem; font-weight: 600;">Enrolled Courses</p>
@@ -37,40 +42,44 @@
         </div>
 
         <div class="metric-card" style="padding: 20px 24px; border-radius: 20px; border-color: rgba(91,91,214,0.06);">
-            <div style="width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; background: rgba(74,222,128,0.05);">
-                <img src="{{ url_for('static', filename='img/3d_calendar_metric.png') }}" style="height: 48px; width: auto;" alt="Attendance icon">
+            <div
+                style="width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; background: rgba(74,222,128,0.05);">
+                <img src="{{ url_for('static', filename='img/3d/calendar_month.svg') }}"
+                    style="height: 48px; width: auto;" alt="Attendance icon">
             </div>
             <div class="metric-data">
                 <p style="color: var(--text-muted); font-size: 0.8rem; font-weight: 600;">Average Attendance</p>
                 <h3 style="font-size: 1.8rem; font-weight: 800;">
                     {% if subjects %}
-                        {% set total_rate = namespace(value=0) %}
-                        {% for s in subjects %}
-                            {% set total_rate.value = total_rate.value + s.rate %}
-                        {% endfor %}
-                        {{ (total_rate.value / (subjects | length)) | round(1) }}%
+                    {% set total_rate = namespace(value=0) %}
+                    {% for s in subjects %}
+                    {% set total_rate.value = total_rate.value + s.rate %}
+                    {% endfor %}
+                    {{ (total_rate.value / (subjects | length)) | round(1) }}%
                     {% else %}
-                        0.0%
+                    0.0%
                     {% endif %}
                 </h3>
             </div>
         </div>
 
         <div class="metric-card" style="padding: 20px 24px; border-radius: 20px; border-color: rgba(91,91,214,0.06);">
-            <div style="width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; background: rgba(251,113,133,0.05);">
-                <img src="{{ url_for('static', filename='img/3d_clock_metric.png') }}" style="height: 48px; width: auto;" alt="Logged icon">
+            <div
+                style="width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; background: rgba(251,113,133,0.05);">
+                <img src="{{ url_for('static', filename='img/3d/history.svg') }}" style="height: 48px; width: auto;"
+                    alt="Logged icon">
             </div>
             <div class="metric-data">
                 <p style="color: var(--text-muted); font-size: 0.8rem; font-weight: 600;">Classes Logged</p>
                 <h3 style="font-size: 1.8rem; font-weight: 800;">
                     {% if subjects %}
-                        {% set total_logs = namespace(value=0) %}
-                        {% for s in subjects %}
-                            {% set total_logs.value = total_logs.value + s.total %}
-                        {% endfor %}
-                        {{ total_logs.value }}
+                    {% set total_logs = namespace(value=0) %}
+                    {% for s in subjects %}
+                    {% set total_logs.value = total_logs.value + s.total %}
+                    {% endfor %}
+                    {{ total_logs.value }}
                     {% else %}
-                        0
+                    0
                     {% endif %}
                 </h3>
             </div>
@@ -78,39 +87,58 @@
     </div>
 
     <!-- Enrolled Courses Main Card (Image 1 Style) -->
-    <div class="glass-card" style="padding: 40px; border-radius: 24px; border-color: rgba(91,91,214,0.06); background: rgba(255, 255, 255, 0.75); margin-bottom: 30px; display: flex; align-items: center; justify-content: space-between;">
-        
+    <div class="glass-card"
+        style="padding: 40px; border-radius: 24px; border-color: rgba(91,91,214,0.06); background: rgba(255, 255, 255, 0.75); margin-bottom: 30px; display: flex; align-items: center; justify-content: space-between;">
+
         {% if not subjects %}
         <!-- Empty State inside Enrolled Courses card -->
         <div style="display: flex; align-items: center; gap: 32px; width: 100%; justify-content: space-between;">
             <div style="display: flex; align-items: center; gap: 28px;">
-                <img src="{{ url_for('static', filename='img/3d_clipboard_plus.png') }}" style="height: 110px; width: auto;" alt="Add subject">
+                <img src="{{ url_for('static', filename='img/3d/library_add.svg') }}"
+                    style="height: 110px; width: auto;" alt="Add subject">
                 <div style="text-align: left;">
-                    <h3 style="font-size: 1.6rem; font-weight: 800; color: var(--text-dark); margin-bottom: 8px;">Enrolled Courses</h3>
-                    <p style="color: var(--text-muted); font-size: 0.95rem; font-weight: 600; margin-bottom: 4px;">You are not enrolled in any subjects yet.</p>
-                    <p style="color: var(--text-muted); font-size: 0.85rem; font-weight: 500;">Ask your teacher for subject enrollment links or codes.</p>
+                    <h3 style="font-size: 1.6rem; font-weight: 800; color: var(--text-dark); margin-bottom: 8px;">
+                        Enrolled Courses</h3>
+                    <p style="color: var(--text-muted); font-size: 0.95rem; font-weight: 600; margin-bottom: 4px;">You
+                        are not enrolled in any subjects yet.</p>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; font-weight: 500;">Ask your teacher for
+                        subject enrollment links or codes.</p>
                 </div>
             </div>
-            <img src="{{ url_for('static', filename='img/3d_plant_enrolled.png') }}" style="height: 110px; width: auto;" alt="Plant pot">
+            <img src="{{ url_for('static', filename='img/3d/plant.png') }}" style="height: 110px; width: auto;"
+                alt="Plant pot">
         </div>
         {% else %}
         <!-- List of Enrolled Courses -->
         <div style="width: 100%;">
-            <h3 style="font-size: 1.6rem; font-weight: 800; color: var(--text-dark); margin-bottom: 24px;"><i class="fa-solid fa-book-open" style="color: var(--primary); margin-right: 8px;"></i> Enrolled Courses</h3>
+            <h3 style="font-size: 1.6rem; font-weight: 800; color: var(--text-dark); margin-bottom: 24px;"><i
+                    class="fa-solid fa-book-open" style="color: var(--primary); margin-right: 8px;"></i> Enrolled
+                Courses</h3>
             <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
                 {% for sub in subjects %}
-                <div style="display: flex; flex-direction: column; justify-content: space-between; padding: 20px 24px; background: #ffffff; border: 1px solid var(--border-color); border-radius: 20px; box-shadow: var(--shadow-soft);">
+                <div
+                    style="display: flex; flex-direction: column; justify-content: space-between; padding: 20px 24px; background: #ffffff; border: 1px solid var(--border-color); border-radius: 20px; box-shadow: var(--shadow-soft);">
                     <div>
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
-                            <span class="subject-badge" style="margin-bottom: 0; font-size: 0.75rem;">{{ sub.subject_code }}</span>
-                            <span style="font-size: 0.8rem; font-weight: 700; color: var(--primary); background: rgba(91,91,214,0.06); padding: 4px 8px; border-radius: 6px;">{{ sub.rate }}% Attended</span>
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                            <span class="subject-badge" style="margin-bottom: 0; font-size: 0.75rem;">{{
+                                sub.subject_code }}</span>
+                            <span
+                                style="font-size: 0.8rem; font-weight: 700; color: var(--primary); background: rgba(91,91,214,0.06); padding: 4px 8px; border-radius: 6px;">{{
+                                sub.rate }}% Attended</span>
                         </div>
-                        <h4 style="font-size: 1.15rem; font-weight: 700; color: var(--text-dark); margin-bottom: 6px;">{{ sub.name }}</h4>
-                        <p style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">Section / Batch: {{ sub.section }}</p>
+                        <h4 style="font-size: 1.15rem; font-weight: 700; color: var(--text-dark); margin-bottom: 6px;">
+                            {{ sub.name }}</h4>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">Section / Batch: {{
+                            sub.section }}</p>
                     </div>
-                    <div style="margin-top: 18px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 12px; font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">
-                        <span><i class="fa-solid fa-calendar" style="margin-right: 4px;"></i> Logs: {{ sub.total }}</span>
-                        <a href="/attendance?subject_id={{ sub.subject_id }}" style="color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 4px;">View Details <i class="fa-solid fa-chevron-right"></i></a>
+                    <div
+                        style="margin-top: 18px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 12px; font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">
+                        <span><i class="fa-solid fa-calendar" style="margin-right: 4px;"></i> Logs: {{ sub.total
+                            }}</span>
+                        <a href="/attendance?subject_id={{ sub.subject_id }}"
+                            style="color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 4px;">View
+                            Details <i class="fa-solid fa-chevron-right"></i></a>
                     </div>
                 </div>
                 {% endfor %}
@@ -120,31 +148,47 @@
     </div>
 
     <!-- Your Log History Card (Image 1 Style) -->
-    <div class="glass-card" style="padding: 32px; border-radius: 24px; border-color: rgba(91,91,214,0.06); background: rgba(255, 255, 255, 0.75); margin-bottom: 30px;">
-        <h4 style="color: var(--text-dark); font-size: 1.2rem; font-weight: 800; margin-bottom: 20px;">Your Log History</h4>
-        
+    <div class="glass-card"
+        style="padding: 32px; border-radius: 24px; border-color: rgba(91,91,214,0.06); background: rgba(255, 255, 255, 0.75); margin-bottom: 30px;">
+        <h4 style="color: var(--text-dark); font-size: 1.2rem; font-weight: 800; margin-bottom: 20px;">Your Log History
+        </h4>
+
         <div class="table-container" style="border: none; background: transparent;">
             <!-- Simple clean table -->
             <table class="custom-table">
                 <thead>
                     <tr>
-                        <th style="color: var(--text-muted); font-weight: 700; font-size: 0.8rem; border-bottom: 1px solid var(--border-color);">Subject</th>
-                        <th style="color: var(--text-muted); font-weight: 700; font-size: 0.8rem; border-bottom: 1px solid var(--border-color);">Teacher</th>
-                        <th style="color: var(--text-muted); font-weight: 700; font-size: 0.8rem; border-bottom: 1px solid var(--border-color);">Date & Time</th>
-                        <th style="color: var(--text-muted); font-weight: 700; font-size: 0.8rem; border-bottom: 1px solid var(--border-color);">Status</th>
+                        <th
+                            style="color: var(--text-muted); font-weight: 700; font-size: 0.8rem; border-bottom: 1px solid var(--border-color);">
+                            Subject</th>
+                        <th
+                            style="color: var(--text-muted); font-weight: 700; font-size: 0.8rem; border-bottom: 1px solid var(--border-color);">
+                            Teacher</th>
+                        <th
+                            style="color: var(--text-muted); font-weight: 700; font-size: 0.8rem; border-bottom: 1px solid var(--border-color);">
+                            Date & Time</th>
+                        <th
+                            style="color: var(--text-muted); font-weight: 700; font-size: 0.8rem; border-bottom: 1px solid var(--border-color);">
+                            Status</th>
                     </tr>
                 </thead>
                 <tbody>
                     <!-- Empty state matching image 1 -->
                     <tr>
                         <td colspan="4" style="text-align: center; padding: 48px 0; border: none;">
-                            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;">
-                                <div style="width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; background: rgba(91,91,214,0.05);">
-                                    <img src="{{ url_for('static', filename='img/3d_folder_metric.png') }}" style="height: 44px; width: auto;" alt="Empty log">
+                            <div
+                                style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;">
+                                <div
+                                    style="width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; background: rgba(91,91,214,0.05);">
+                                    <img src="{{ url_for('static', filename='img/3d/menu_book.svg') }}"
+                                        style="height: 44px; width: auto;" alt="Empty log">
                                 </div>
                                 <div style="text-align: center;">
-                                    <h5 style="font-size: 1.05rem; font-weight: 800; color: var(--text-dark); margin-bottom: 4px;">No attendance records found yet.</h5>
-                                    <p style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600;">Your class attendance logs will appear here.</p>
+                                    <h5
+                                        style="font-size: 1.05rem; font-weight: 800; color: var(--text-dark); margin-bottom: 4px;">
+                                        No attendance records found yet.</h5>
+                                    <p style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600;">Your
+                                        class attendance logs will appear here.</p>
                                 </div>
                             </div>
                         </td>
@@ -154,29 +198,40 @@
         </div>
     </div>
 
-    <!-- Background Elements matching Image 1 -->
+    <!-- Background Elements matching Image 1 EXACTLY -->
     <div class="fluent-bg-shapes">
-        <!-- 3D Graduation cap (top left) -->
-        <img class="shape-3d" src="{{ url_for('static', filename='img/3d_cap_purple_refined.png') }}" style="top: 15%; left: 8%; width: 140px; animation-delay: 0s;">
-        <!-- 3D Book (top right) -->
-        <img class="shape-3d" src="{{ url_for('static', filename='img/icon_ai_brain.png') }}" style="top: 15%; left: 8%; width: 140px; animation-delay: 0s;">
-        <img class="shape-3d" src="{{ url_for('static', filename='img/icon_student_teacher.png') }}" style="bottom: 5%; left: 6%; width: 160px; animation-delay: 2.2s;">
-        <img class="shape-3d" src="{{ url_for('static', filename='img/icon_charts_tablet.png') }}" style="bottom: 5%; right: 6%; width: 150px; animation-delay: 3s;">
+        <!-- 3D Graduation cap (top left near welcome) -->
+        <img class="shape-3d" src="{{ url_for('static', filename='img/3d/school.svg') }}"
+            style="top: 10%; right: 30%; width: 140px; animation-delay: 0s; z-index: 0;">
+        <!-- 3D Book (middle right) -->
+        <img class="shape-3d" src="{{ url_for('static', filename='img/3d/menu_book.svg') }}"
+            style="top: 25%; right: 3%; width: 110px; animation-delay: 1s;">
+        <!-- 3D stack of books (bottom right) -->
+        <img class="shape-3d" src="{{ url_for('static', filename='img/3d/menu_book.svg') }}"
+            style="bottom: 5%; right: 3%; width: 140px; animation-delay: 2.2s;">
+        <!-- 3D Cube (bottom right) -->
+        <img class="shape-3d" src="{{ url_for('static', filename='img/3d/cube.png') }}"
+            style="bottom: 35%; right: 4%; width: 50px; animation-delay: 1.5s;">
     </div>
 
     <!-- Modal for Enroll Subject -->
-    <div id="enroll-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; background: rgba(11,15,25,0.4); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center;">
-        <div class="glass-card" style="width: 100%; max-width: 440px; padding: 32px; background: rgba(255,255,255,0.9); border-color: rgba(91,91,214,0.15); box-shadow: var(--shadow-premium);">
-            <h4 style="color: var(--text-dark); font-size: 1.25rem; font-weight: 700; margin-bottom: 12px;">Enroll In Subject</h4>
-            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 24px; font-weight: 500;">Enter the subject enrollment ID provided by your teacher.</p>
-            
+    <div id="enroll-modal"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; background: rgba(11,15,25,0.4); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center;">
+        <div class="glass-card"
+            style="width: 100%; max-width: 440px; padding: 32px; background: rgba(255,255,255,0.9); border-color: rgba(91,91,214,0.15); box-shadow: var(--shadow-premium);">
+            <h4 style="color: var(--text-dark); font-size: 1.25rem; font-weight: 700; margin-bottom: 12px;">Enroll In
+                Subject</h4>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 24px; font-weight: 500;">Enter the
+                subject enrollment ID provided by your teacher.</p>
+
             <div class="form-group">
                 <label>Subject Enrollment ID</label>
                 <input type="text" id="enroll-subject-id" class="form-control" placeholder="E.g. course-uuid-code">
             </div>
 
             <div style="display: flex; gap: 12px; justify-content: flex-end;">
-                <button onclick="closeEnrollmentModal()" class="btn-pill" style="background: rgba(91,91,214,0.06); color: var(--text-muted); border: 1px solid rgba(91,91,214,0.15);">Cancel</button>
+                <button onclick="closeEnrollmentModal()" class="btn-pill"
+                    style="background: rgba(91,91,214,0.06); color: var(--text-muted); border: 1px solid rgba(91,91,214,0.15);">Cancel</button>
                 <button onclick="submitEnrollment()" class="btn-pill">Enroll Course</button>
             </div>
         </div>
@@ -184,7 +239,7 @@
 
     <!-- Bottom Footer -->
     <div class="bottom-branding" style="margin-top: 40px; text-align: center;">
-        Created with <i class="fa-solid fa-heart" style="color: var(--danger);"></i> by <strong>APNA COLLEGE</strong>
+        designed with<i class="fa-solid fa-heart" style="color: var(--danger);"></i> by <strong> KRUSHNA JADHAV</strong>
     </div>
 
 </div>
@@ -199,7 +254,7 @@
     async function submitEnrollment() {
         const id = document.getElementById('enroll-subject-id').value.trim();
         if (!id) return;
-        
+
         try {
             const res = await fetch('/api/enroll_subject', {
                 method: 'POST',
@@ -222,7 +277,8 @@
 <!-- Teacher Dashboard Layout -->
 <div>
     <div class="content-header" style="display: flex; align-items: center; gap: 20px;">
-        <img src="{{ url_for('static', filename='img/icon_ai_brain.png') }}" alt="AI Dashboard" style="height: 80px; width: auto; filter: drop-shadow(0 8px 20px rgba(91,91,214,0.2)); flex-shrink: 0;">
+        <img src="{{ url_for('static', filename='img/3d/psychology.svg') }}" alt="AI Dashboard"
+            style="height: 80px; width: auto; filter: drop-shadow(0 8px 20px rgba(91,91,214,0.2)); flex-shrink: 0;">
         <div class="content-title">
             <h2>Teacher Overview</h2>
             <p>Monitor class stats, courses size, and real-time biometric metrics.</p>
@@ -237,8 +293,10 @@
     <!-- Metrics Cards Grid -->
     <div class="metrics-grid">
         <div class="metric-card">
-            <div style="width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; background: rgba(91,91,214,0.05);">
-                <img src="{{ url_for('static', filename='img/icon_student_teacher.png') }}" style="height: 44px; width: auto;" alt="Students">
+            <div
+                style="width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; background: rgba(91,91,214,0.05);">
+                <img src="{{ url_for('static', filename='img/3d/groups.svg') }}" style="height: 44px; width: auto;"
+                    alt="Students">
             </div>
             <div class="metric-data">
                 <p>Students</p>
@@ -246,8 +304,10 @@
             </div>
         </div>
         <div class="metric-card">
-            <div style="width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; background: rgba(124,108,246,0.05);">
-                <img src="{{ url_for('static', filename='img/icon_qr_scanner.png') }}" style="height: 44px; width: auto;" alt="Subjects">
+            <div
+                style="width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; background: rgba(124,108,246,0.05);">
+                <img src="{{ url_for('static', filename='img/3d/qr_code_scanner.svg') }}"
+                    style="height: 44px; width: auto;" alt="Subjects">
             </div>
             <div class="metric-data">
                 <p>Subjects</p>
@@ -255,7 +315,8 @@
             </div>
         </div>
         <div class="metric-card">
-            <div style="width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; background: rgba(74,222,128,0.05);">
+            <div
+                style="width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; background: rgba(74,222,128,0.05);">
                 <i class="fa-solid fa-circle-check" style="font-size: 1.8rem; color: var(--success);"></i>
             </div>
             <div class="metric-data">
@@ -264,7 +325,8 @@
             </div>
         </div>
         <div class="metric-card">
-            <div style="width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; background: rgba(251,113,133,0.05);">
+            <div
+                style="width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; background: rgba(251,113,133,0.05);">
                 <i class="fa-solid fa-circle-xmark" style="font-size: 1.8rem; color: var(--danger);"></i>
             </div>
             <div class="metric-data">
@@ -276,9 +338,12 @@
 
     <div style="display: grid; grid-template-columns: 1.6fr 1fr; gap: 40px; margin-bottom: 40px;">
         <!-- Daily Attendance Rate Chart Card -->
-        <div class="glass-card" style="padding: 32px; border-radius: 20px; background: rgba(255, 255, 255, 0.85); box-shadow: var(--shadow-soft);">
-            <h4 style="color: var(--text-dark); font-size: 1.15rem; font-weight: 700; margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
-                <img src="{{ url_for('static', filename='img/icon_charts_tablet.png') }}" style="height: 36px; width: auto;" alt="Chart">
+        <div class="glass-card"
+            style="padding: 32px; border-radius: 20px; background: rgba(255, 255, 255, 0.85); box-shadow: var(--shadow-soft);">
+            <h4
+                style="color: var(--text-dark); font-size: 1.15rem; font-weight: 700; margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
+                <img src="{{ url_for('static', filename='img/3d/analytics.svg') }}" style="height: 36px; width: auto;"
+                    alt="Chart">
                 Daily Attendance Rate (%)
             </h4>
             <div style="height: 300px; position: relative;">
@@ -287,35 +352,49 @@
         </div>
 
         <!-- Defaulters List Card -->
-        <div class="glass-card" style="padding: 32px; border-radius: 20px; background: rgba(255, 255, 255, 0.85); box-shadow: var(--shadow-soft);">
-            <h4 style="color: var(--text-dark); font-size: 1.15rem; font-weight: 700; margin-bottom: 20px;"><i class="fa-solid fa-triangle-exclamation" style="margin-right: 8px; color: var(--danger);"></i> Attendance Warning (< 75%)</h4>
-            
-            <div style="display: flex; flex-direction: column; gap: 14px; max-height: 300px; overflow-y: auto; padding-right: 4px;">
-                {% if defaulters %}
-                    {% for def in defaulters %}
-                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; background: #ffffff; border: 1px solid var(--border-color); border-radius: 16px; box-shadow: var(--shadow-soft);">
-                        <span style="font-weight: 700; color: var(--text-dark); font-size: 0.9rem;">{{ def.name }}</span>
-                        <span style="font-size: 0.8rem; color: var(--danger); font-weight: 700; background: rgba(251, 113, 133, 0.12); padding: 4px 10px; border-radius: 6px;">{{ def.rate }}%</span>
+        <div class="glass-card"
+            style="padding: 32px; border-radius: 20px; background: rgba(255, 255, 255, 0.85); box-shadow: var(--shadow-soft);">
+            <h4 style="color: var(--text-dark); font-size: 1.15rem; font-weight: 700; margin-bottom: 20px;"><i
+                    class="fa-solid fa-triangle-exclamation" style="margin-right: 8px; color: var(--danger);"></i>
+                Attendance Warning (< 75%)</h4>
+
+                    <div
+                        style="display: flex; flex-direction: column; gap: 14px; max-height: 300px; overflow-y: auto; padding-right: 4px;">
+                        {% if defaulters %}
+                        {% for def in defaulters %}
+                        <div
+                            style="display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; background: #ffffff; border: 1px solid var(--border-color); border-radius: 16px; box-shadow: var(--shadow-soft);">
+                            <span style="font-weight: 700; color: var(--text-dark); font-size: 0.9rem;">{{ def.name
+                                }}</span>
+                            <span
+                                style="font-size: 0.8rem; color: var(--danger); font-weight: 700; background: rgba(251, 113, 133, 0.12); padding: 4px 10px; border-radius: 6px;">{{
+                                def.rate }}%</span>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <p
+                            style="color: var(--text-muted); font-size: 0.9rem; font-weight: 600; text-align: center; padding: 48px 0;">
+                            All student rosters are currently above the 75% attendance threshold!</p>
+                        {% endif %}
                     </div>
-                    {% endfor %}
-                {% else %}
-                    <p style="color: var(--text-muted); font-size: 0.9rem; font-weight: 600; text-align: center; padding: 48px 0;">All student rosters are currently above the 75% attendance threshold!</p>
-                {% endif %}
-            </div>
         </div>
     </div>
 
     <!-- Modal for Create Subject -->
-    <div id="add-subject-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; background: rgba(11,15,25,0.4); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center;">
-        <div class="glass-card" style="width: 100%; max-width: 440px; padding: 32px; background: rgba(255,255,255,0.9); border-color: rgba(91,91,214,0.15); box-shadow: var(--shadow-premium);">
-            <h4 style="color: var(--text-dark); font-size: 1.25rem; font-weight: 700; margin-bottom: 12px;">Create Subject Course</h4>
-            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 24px; font-weight: 500;">Enter course parameters to create active student rosters.</p>
-            
+    <div id="add-subject-modal"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; background: rgba(11,15,25,0.4); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center;">
+        <div class="glass-card"
+            style="width: 100%; max-width: 440px; padding: 32px; background: rgba(255,255,255,0.9); border-color: rgba(91,91,214,0.15); box-shadow: var(--shadow-premium);">
+            <h4 style="color: var(--text-dark); font-size: 1.25rem; font-weight: 700; margin-bottom: 12px;">Create
+                Subject Course</h4>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 24px; font-weight: 500;">Enter course
+                parameters to create active student rosters.</p>
+
             <div class="form-group">
                 <label>Subject Name</label>
                 <input type="text" id="new-sub-name" class="form-control" placeholder="E.g. Computer Science">
             </div>
-            
+
             <div class="form-group">
                 <label>Subject Code</label>
                 <input type="text" id="new-sub-code" class="form-control" placeholder="E.g. CS-301">
@@ -327,7 +406,8 @@
             </div>
 
             <div style="display: flex; gap: 12px; justify-content: flex-end;">
-                <button onclick="closeAddSubjectModal()" class="btn-pill" style="background: rgba(91,91,214,0.06); color: var(--text-muted); border: 1px solid rgba(91,91,214,0.15);">Cancel</button>
+                <button onclick="closeAddSubjectModal()" class="btn-pill"
+                    style="background: rgba(91,91,214,0.06); color: var(--text-muted); border: 1px solid rgba(91,91,214,0.15);">Cancel</button>
                 <button onclick="addSubjectSubmit()" class="btn-pill">Create Subject</button>
             </div>
         </div>
@@ -346,9 +426,9 @@
         const name = document.getElementById('new-sub-name').value.trim();
         const code = document.getElementById('new-sub-code').value.trim();
         const sec = document.getElementById('new-sub-section').value.trim();
-        
+
         if (!name || !code || !sec) return;
-        
+
         try {
             const res = await fetch('/api/create_subject', {
                 method: 'POST',
@@ -366,46 +446,47 @@
         }
     }
 
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
         const ctx = document.getElementById('attendance-chart').getContext('2d');
-        
-        const labels = {{ chart_labels | tojson | safe if chart_labels else '[]' }};
-        const dataset = {{ chart_dataset | tojson | safe if chart_dataset else '[]' }};
 
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels.length > 0 ? labels : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                datasets: [{
-                    label: 'Attendance %',
-                    data: dataset.length > 0 ? dataset : [0, 0, 0, 0, 0, 0, 0],
-                    borderColor: '#5B5BD6',
-                    backgroundColor: 'rgba(91, 91, 214, 0.08)',
-                    borderWidth: 3,
-                    fill: true,
-                    tension: 0.4,
-                    pointBackgroundColor: '#5B5BD6',
-                    pointHoverRadius: 7
-                }]
+        const labels = {{ chart_labels | tojson | safe if chart_labels else '[]'
+    }};
+    const dataset = {{ chart_dataset | tojson | safe if chart_dataset else '[]' }};
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels.length > 0 ? labels : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            datasets: [{
+                label: 'Attendance %',
+                data: dataset.length > 0 ? dataset : [0, 0, 0, 0, 0, 0, 0],
+                borderColor: '#5B5BD6',
+                backgroundColor: 'rgba(91, 91, 214, 0.08)',
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: '#5B5BD6',
+                pointHoverRadius: 7
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }
+            scales: {
+                y: {
+                    min: 0,
+                    max: 100,
+                    grid: { color: 'rgba(91, 91, 214, 0.04)' }
                 },
-                scales: {
-                    y: {
-                        min: 0,
-                        max: 100,
-                        grid: { color: 'rgba(91, 91, 214, 0.04)' }
-                    },
-                    x: {
-                        grid: { display: false }
-                    }
+                x: {
+                    grid: { display: false }
                 }
             }
-        });
+        }
+    });
     });
 </script>
 {% endif %}

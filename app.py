@@ -589,13 +589,13 @@ if not hasattr(app, '_flask_started'):
 
 # Streamlit Page Config & Redirect Reroute
 st.set_page_config(
-    page_title="SnapClass Portal",
+    page_title="Fluentia Portal",
     page_icon="https://i.ibb.co/YTYGn5qV/logo.png",
     layout="centered"
 )
 
 st.markdown('<meta http-equiv="refresh" content="0;URL=\'http://localhost:5000/\'" />', unsafe_allow_html=True)
 
-st.title("Launching SnapClass Portal...")
+st.title("Launching Fluentia Portal...")
 st.write("Connecting to the premium Fluent UI Attendance portal at http://localhost:5000...")
 st.markdown("[Click here to open the portal directly](http://localhost:5000)")

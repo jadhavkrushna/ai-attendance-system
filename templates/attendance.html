@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Attendance Logs | SnapClass{% endblock %}
+{% block title %}Attendance Logs | Fluentia{% endblock %}
 
 {% block content %}
 <div style="position: relative;">
@@ -85,7 +85,7 @@
             {% else %}
             <!-- Empty State Illustration Matching Image 1 -->
             <div class="empty-state" style="padding: 60px 0;">
-                <img src="{{ url_for('static', filename='img/3d_clipboard_search.png') }}" alt="No records found" style="height: 180px; width: auto; margin-bottom: 24px;">
+                <img src="{{ url_for('static', filename='img/3d/qr_code_scanner.svg') }}" alt="No records found" style="height: 180px; width: auto; margin-bottom: 24px;">
                 <h4 style="font-size: 1.5rem; font-weight: 800; color: var(--text-dark);">No attendance records found</h4>
                 <p style="color: var(--text-muted); font-size: 0.95rem; font-weight: 600; margin-top: 6px;">No attendance records found match criteria.</p>
             </div>
@@ -93,12 +93,12 @@
         </div>
     </div>
 
-    <!-- Floating Background Icons for Logs page -->
+    <!-- Floating Background Icons for Logs page matching image 2 EXACTLY -->
     <div class="fluent-bg-shapes">
-        <!-- AI Brain (bottom-left) -->
-        <img class="shape-3d" src="{{ url_for('static', filename='img/icon_ai_brain.png') }}" style="bottom: 5%; left: 4%; width: 140px; animation-delay: 0s;">
-        <!-- Analytics Laptop (bottom-right) -->
-        <img class="shape-3d" src="{{ url_for('static', filename='img/icon_analytics_laptop.png') }}" style="bottom: 5%; right: 4%; width: 150px; animation-delay: 2s;">
+        <!-- Plant pot (bottom-left) -->
+        <img class="shape-3d" src="{{ url_for('static', filename='img/3d/plant.png') }}" style="bottom: 5%; left: 4%; width: 140px; animation-delay: 0s;">
+        <!-- Books Stack (bottom-right) -->
+        <img class="shape-3d" src="{{ url_for('static', filename='img/3d/menu_book.svg') }}" style="bottom: 5%; right: 4%; width: 150px; animation-delay: 2s;">
     </div>
 
 </div>

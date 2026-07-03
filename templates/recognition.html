@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %}Live Face Scanner | SnapClass{% endblock %}
+{% block title %}Live Face Scanner | Fluentia{% endblock %}
 
 {% block content %}
 <div>
     <div class="content-header" style="display: flex; align-items: center; gap: 20px;">
-        <img src="{{ url_for('static', filename='img/icon_face_recog.png') }}" alt="Face Scanner" style="height: 80px; width: auto; filter: drop-shadow(0 8px 20px rgba(91,91,214,0.2)); flex-shrink: 0;">
+        <img src="{{ url_for('static', filename='img/3d/face.svg') }}" alt="Face Scanner" style="height: 80px; width: auto; filter: drop-shadow(0 8px 20px rgba(91,91,214,0.2)); flex-shrink: 0;">
         <div class="content-title">
             <h2>Live Face Scanner</h2>
             <p>Scan your class room using next-gen facial embedding models.</p>
@@ -210,6 +210,6 @@
 
 <!-- Live Scanner Page Specific 3D Camera Background Shape -->
 <div class="fluent-bg-shapes">
-    <img class="shape-3d" src="{{ url_for('static', filename='img/icon_qr_scanner.png') }}" style="bottom: 8%; right: 6%; width: 130px; animation-delay: 1s;">
+    <img class="shape-3d" src="{{ url_for('static', filename='img/3d/qr_code_scanner.svg') }}" style="bottom: 8%; right: 6%; width: 130px; animation-delay: 1s;">
 </div>
 {% endblock %}
