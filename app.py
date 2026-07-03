@@ -10,6 +10,7 @@ import numpy as np
 import bcrypt
 
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify, Response
+import re
 
 # Supabase database wrapper methods
 from src.database.db import (
@@ -18,7 +19,8 @@ from src.database.db import (
     create_subject, get_teacher_subjects,
     enroll_student_to_subject, unenroll_student_to_subject,
     get_student_subjects, get_student_attendance,
-    create_attendance, get_attendance_for_teacher, supabase
+    create_attendance, get_attendance_for_teacher, supabase,
+    resolve_subject_registry_code
 )
 
 # AI Recognition Pipelines
@@ -493,15 +495,21 @@ def api_create_attendance():
 @login_required
 def api_create_subject():
     data = request.json
-    name = data.get('name')
-    code = data.get('code')
-    section = data.get('section')
+    name = (data.get('name') or '').strip()
+    code = (data.get('code') or '').strip()
+    section = (data.get('section') or '').strip()
     
     if not name or not code or not section:
         return jsonify({'success': False, 'message': 'Missing parameters.'}), 400
+    if len(name) < 2:
+        return jsonify({'success': False, 'message': 'Subject name must be at least 2 characters.'}), 400
+    if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9 _/-]{1,39}', code):
+        return jsonify({'success': False, 'message': 'Subject code must use letters, numbers, spaces, dashes, or slashes.'}), 400
+    if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9 _/-]{0,39}', section):
+        return jsonify({'success': False, 'message': 'Section must use letters, numbers, spaces, dashes, or slashes.'}), 400
         
     try:
-        create_subject(session['user_id'], name, code, section)
+        create_subject(code, name, section, session['user_id'])
         return jsonify({'success': True})
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
@@ -510,10 +518,10 @@ def api_create_subject():
 @login_required
 def api_enroll_subject():
     data = request.json
-    subject_id = data.get('subject_id')
+    subject_id = resolve_subject_registry_code(data.get('subject_id'))
     
     if not subject_id:
-        return jsonify({'success': False, 'message': 'Missing subject ID.'}), 400
+        return jsonify({'success': False, 'message': 'Enter a valid subject registry code.'}), 400
         
     try:
         enroll_student_to_subject(session['user_id'], subject_id)
@@ -525,10 +533,10 @@ def api_enroll_subject():
 @login_required
 def api_unenroll_subject():
     data = request.json
-    subject_id = data.get('subject_id')
+    subject_id = resolve_subject_registry_code(data.get('subject_id'))
     
     if not subject_id:
-        return jsonify({'success': False, 'message': 'Missing subject ID.'}), 400
+        return jsonify({'success': False, 'message': 'Enter a valid subject registry code.'}), 400
         
     try:
         unenroll_student_to_subject(session['user_id'], subject_id)

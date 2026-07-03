@@ -337,6 +337,7 @@ body {
     display: flex;
     align-items: center;
     gap: 12px;
+    margin-top: 8px;
     margin-bottom: 60px;
     padding-left: 12px;
 }
@@ -1150,8 +1151,16 @@ body {
     line-height: 1;
 }
 
+.brand-lockup {
+    margin-top: 48px !important;
+}
+
 .landing-shell {
     padding: 14px 64px !important;
+}
+
+.landing-shell .brand-lockup {
+    margin-top: 56px !important;
 }
 
 .landing-shell>div:first-child img {
@@ -1174,6 +1183,10 @@ body {
 
 .auth-shell {
     padding: 14px 56px !important;
+}
+
+.auth-shell .brand-lockup {
+    margin-top: 56px !important;
 }
 
 .auth-shell>div:nth-of-type(2) {

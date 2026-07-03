@@ -28,6 +28,9 @@
                 </div>
                 <h3>{{ sub.name }}</h3>
                 <p>Section / Batch: <strong>{{ sub.section }}</strong></p>
+                <div style="font-size: 0.78rem; color: var(--text-muted); font-weight: 700; margin-bottom: 14px;">
+                    Registry ID: <span style="color: var(--primary);">{{ sub.subject_registry_id }}</span>
+                </div>
 
                 <!-- Mini stats row -->
                 <div style="display: flex; gap: 10px; margin-top: 6px; margin-bottom: 18px;">
@@ -42,7 +45,7 @@
                 </div>
 
                 <div style="display: flex; gap: 12px; width: 100%;">
-                    <button onclick="openShareSubjectModal('{{ sub.subject_id }}', '{{ sub.name }}')" class="btn-pill" style="flex: 1; justify-content: center; padding: 10px 16px; font-size: 0.8rem; border-radius: 12px;">
+                    <button onclick="openShareSubjectModal('{{ sub.subject_registry_id }}', '{{ sub.name }}')" class="btn-pill" style="flex: 1; justify-content: center; padding: 10px 16px; font-size: 0.8rem; border-radius: 12px;">
                         <i class="fa-solid fa-qrcode" style="margin-right: 6px;"></i> Share Portal
                     </button>
                 </div>
@@ -163,7 +166,24 @@
         const code = document.getElementById('new-sub-code').value.trim();
         const sec = document.getElementById('new-sub-section').value.trim();
         
-        if (!name || !code || !sec) return;
+        if (!name || !code || !sec) {
+            alert('Please fill in subject name, code, and section.');
+            return;
+        }
+        if (name.length < 2) {
+            alert('Subject name must be at least 2 characters.');
+            return;
+        }
+        const validText = /^[A-Za-z0-9][A-Za-z0-9 _/-]{1,39}$/;
+        const validSection = /^[A-Za-z0-9][A-Za-z0-9 _/-]{0,39}$/;
+        if (!validText.test(code)) {
+            alert('Subject code can only use letters, numbers, spaces, dashes, or slashes.');
+            return;
+        }
+        if (!validSection.test(sec)) {
+            alert('Section can only use letters, numbers, spaces, dashes, or slashes.');
+            return;
+        }
         
         try {
             const res = await fetch('/api/create_subject', {

@@ -1,6 +1,52 @@
 from src.database.config import supabase
 import bcrypt
 
+REGISTRY_CODE_PREFIX = "WHZ"
+REGISTRY_CODE_OFFSET = 5000
+
+
+def _to_base36(value):
+    alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    if value == 0:
+        return "0"
+
+    result = []
+    while value > 0:
+        value, remainder = divmod(value, 36)
+        result.append(alphabet[remainder])
+    return "".join(reversed(result))
+
+
+def _from_base36(value):
+    return int(value, 36)
+
+
+def generate_subject_registry_code(subject_id):
+    subject_num = int(subject_id)
+    encoded = _to_base36(subject_num + REGISTRY_CODE_OFFSET)
+    return f"{REGISTRY_CODE_PREFIX}{encoded}"
+
+
+def resolve_subject_registry_code(value):
+    if value is None:
+        return None
+
+    raw = str(value).strip().upper()
+    if not raw:
+        return None
+    if raw.isdigit():
+        return int(raw)
+    if raw.startswith(REGISTRY_CODE_PREFIX):
+        encoded = raw[len(REGISTRY_CODE_PREFIX):]
+        if not encoded:
+            return None
+        try:
+            subject_num = _from_base36(encoded) - REGISTRY_CODE_OFFSET
+            return subject_num if subject_num > 0 else None
+        except ValueError:
+            return None
+    return None
+
 
 
 def hash_pass(pwd):
@@ -59,6 +105,7 @@ def get_teacher_subjects(teacher_id):
 
 
     for sub in subjects:
+        sub['subject_registry_id'] = generate_subject_registry_code(sub['subject_id'])
         sub['total_students'] = sub.get("subject_students", [{}])[0].get('count', 0) if sub.get('subject_students') else 0
         attendance = sub.get('attendance_logs', [])
         unique_sessions = len(set(log['timestamp'] for log in attendance))
@@ -85,7 +132,14 @@ def  unenroll_student_to_subject(student_id, subject_id):
 
 def get_student_subjects(student_id):
     response = supabase.table('subject_students').select('*, subjects(*)').eq('student_id', student_id).execute()
-    return response.data
+    subjects = response.data
+
+    for row in subjects:
+        subject = row.get('subjects')
+        if subject and subject.get('subject_id') is not None:
+            subject['subject_registry_id'] = generate_subject_registry_code(subject['subject_id'])
+
+    return subjects
 
 
 def get_student_attendance(student_id):

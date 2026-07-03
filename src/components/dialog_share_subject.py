@@ -2,12 +2,14 @@ import streamlit as st
 
 import segno
 import io
+from src.database.db import generate_subject_registry_code
 
 
 @st.dialog("Share Class Link")
 def share_subject_dialog(subject_name, subject_code):
     app_domain = "fluentia-main.streamlit.app"
-    join_url = f"{app_domain}/?join-code={subject_code}"
+    registry_code = generate_subject_registry_code(subject_code) if str(subject_code).isdigit() else subject_code
+    join_url = f"{app_domain}/?join-code={registry_code}"
 
     st.header("Scan to Join")
 
@@ -22,7 +24,7 @@ def share_subject_dialog(subject_name, subject_code):
     with col1:
         st.markdown('### Copy Link')
         st.code(join_url, language="text")
-        st.code(subject_code, language="text")
+        st.code(registry_code, language="text")
         st.info('Copy this link to share on Whatsapp or Email')
 
     with col2:
