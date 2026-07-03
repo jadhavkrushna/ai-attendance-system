@@ -4,11 +4,11 @@
 
 {% block content %}
 <div>
-    <div class="content-header" style="display: flex; align-items: center; gap: 20px;">
-        <img src="{{ url_for('static', filename='img/3d/groups.svg') }}" alt="Students" style="height: 80px; width: auto; filter: drop-shadow(0 8px 20px rgba(91,91,214,0.2)); flex-shrink: 0;">
+    <div class="content-header visual-header" style="display: flex; align-items: center; gap: 20px;">
+        <img class="header-illustration" src="{{ url_for('static', filename='img/3d/groups.svg') }}" alt="Students">
         <div class="content-title">
             <h2>Student Directory</h2>
-            <p>Manage enrolled students profiles, Face IDs, and voice biometrics.</p>
+            <p>Manage enrolled student profiles, Face IDs, and voice biometrics.</p>
         </div>
         <div style="margin-left: auto;">
             <button onclick="openAddStudentModal()" class="btn-pill">
@@ -17,67 +17,122 @@
         </div>
     </div>
 
-    <!-- Student table -->
-    <div class="glass-card" style="padding: 32px; border-radius: 20px; background: rgba(255, 255, 255, 0.85); box-shadow: var(--shadow-premium); border-color: rgba(91,91,214,0.08);">
-        <div class="table-container" style="border: none; background: transparent;">
-            <table class="custom-table">
-                <thead>
-                    <tr>
-                        <th style="color: var(--text-muted); font-weight: 700; font-size: 0.85rem;">Student Name</th>
-                        <th style="color: var(--text-muted); font-weight: 700; font-size: 0.85rem;">Face ID status</th>
-                        <th style="color: var(--text-muted); font-weight: 700; font-size: 0.85rem;">Voice ID status</th>
-                        <th style="color: var(--text-muted); font-weight: 700; font-size: 0.85rem;">Enrolled Date</th>
-                        <th style="color: var(--text-muted); font-weight: 700; font-size: 0.85rem; text-align: right;">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% if students %}
+    <!-- Student table + side panel -->
+    <div class="page-duo-grid">
+        <div class="glass-card" style="padding: 32px; border-radius: 20px; background: rgba(255,255,255,0.85); box-shadow: var(--shadow-premium); border-color: rgba(91,91,214,0.08);">
+            <div class="table-container" style="border: none; background: transparent;">
+                {% if students %}
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th style="color: var(--text-muted); font-weight: 700; font-size: 0.85rem;">Student Name</th>
+                            <th style="color: var(--text-muted); font-weight: 700; font-size: 0.85rem;">Face ID</th>
+                            <th style="color: var(--text-muted); font-weight: 700; font-size: 0.85rem;">Voice ID</th>
+                            <th style="color: var(--text-muted); font-weight: 700; font-size: 0.85rem;">Enrolled Date</th>
+                            <th style="color: var(--text-muted); font-weight: 700; font-size: 0.85rem; text-align: right;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                         {% for stud in students %}
                         <tr>
-                            <td style="font-weight: 700; color: var(--text-dark); display: flex; align-items: center; gap: 12px; border-bottom: none;">
-                                <div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.95rem;">
-                                    {{ stud.name[0] | upper }}
+                            <td style="font-weight: 700; color: var(--text-dark);">
+                                <div style="display:flex; align-items:center; gap:12px;">
+                                    <div style="width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,var(--primary) 0%,var(--secondary) 100%); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.95rem; flex-shrink:0;">{{ stud.name[0] | upper }}</div>
+                                    {{ stud.name }}
                                 </div>
-                                {{ stud.name }}
                             </td>
                             <td>
                                 {% if stud.face_embedding %}
-                                <span style="color: var(--success); font-weight: 600;"><i class="fa-solid fa-circle-check"></i> Enrolled</span>
+                                <span style="color:var(--success); font-weight:600;"><i class="fa-solid fa-circle-check"></i> Enrolled</span>
                                 {% else %}
-                                <span style="color: var(--text-muted); font-weight: 500;"><i class="fa-solid fa-circle-notch fa-spin"></i> Missing</span>
+                                <span style="color:var(--text-muted); font-weight:500;"><i class="fa-solid fa-circle-notch fa-spin"></i> Missing</span>
                                 {% endif %}
                             </td>
                             <td>
                                 {% if stud.voice_embedding %}
-                                <span style="color: var(--success); font-weight: 600;"><i class="fa-solid fa-circle-check"></i> Enrolled</span>
+                                <span style="color:var(--success); font-weight:600;"><i class="fa-solid fa-circle-check"></i> Enrolled</span>
                                 {% else %}
-                                <span style="color: var(--text-muted); font-weight: 500;"><i class="fa-solid fa-circle-notch"></i> Missing</span>
+                                <span style="color:var(--text-muted); font-weight:500;"><i class="fa-solid fa-circle-notch"></i> Missing</span>
                                 {% endif %}
                             </td>
-                            <td style="color: var(--text-muted); font-weight: 500;">{{ stud.created_at[:10] }}</td>
-                            <td style="text-align: right;">
-                                <button onclick="deleteStudentProfile('{{ stud.student_id }}')" class="btn-pill-pink" style="padding: 6px 14px; font-size: 0.75rem; border-radius: 100px; box-shadow: none;">
+                            <td style="color:var(--text-muted); font-weight:500;">{{ stud.created_at[:10] if stud.created_at else '—' }}</td>
+                            <td style="text-align:right;">
+                                <button onclick="deleteStudentProfile('{{ stud.student_id }}')" class="btn-pill-pink" style="padding:6px 14px; font-size:0.75rem; border-radius:100px; box-shadow:none;">
                                     <i class="fa-solid fa-trash-can"></i> Delete
                                 </button>
                             </td>
                         </tr>
                         {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 48px 0; font-weight: 600;">No student profiles registered yet.</td>
-                        </tr>
-                    {% endif %}
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="empty-state-rich">
+                    <img src="{{ url_for('static', filename='img/3d/person.png') }}" alt="Add student">
+                    <div>
+                        <h4>No student profiles yet</h4>
+                        <p>Create the first profile to start building your biometric attendance roster.</p>
+                        <button onclick="openAddStudentModal()" class="btn-pill">
+                            <i class="fa-solid fa-user-plus"></i> Enroll Student
+                        </button>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Side visual panel -->
+        <aside class="side-visual-panel">
+            <div>
+                <img src="{{ url_for('static', filename='img/3d/student.png') }}" alt="Student profile">
+                <h3>Biometric roster health</h3>
+                <p>Keep student profiles complete so face and voice checks stay fast during live sessions.</p>
+            </div>
+            <div class="mini-stat-list">
+                <div class="mini-stat"><span>Face ID</span><strong>Primary</strong></div>
+                <div class="mini-stat"><span>Voice ID</span><strong>Optional</strong></div>
+                <div class="mini-stat"><span>Total Students</span><strong>{{ students | length if students else 0 }}</strong></div>
+                <div class="mini-stat"><span>Face Enrolled</span><strong>{{ students | selectattr('face_embedding') | list | length if students else 0 }}</strong></div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Insight strip -->
+    <div class="insight-strip" style="margin-top: 30px;">
+        <div class="insight-card">
+            <img src="{{ url_for('static', filename='img/3d/face.svg') }}" alt="Face ID">
+            <div>
+                <h4>AI Face Biometrics</h4>
+                <p>Student face IDs are encrypted embeddings used for instant attendance recognition.</p>
+            </div>
+        </div>
+        <div class="insight-card">
+            <img src="{{ url_for('static', filename='img/3d/qr_code_scanner.svg') }}" alt="Scanner">
+            <div>
+                <h4>Live Scanner</h4>
+                <p>Take class attendance in seconds by scanning the full room from the Recognition page.</p>
+            </div>
+        </div>
+        <div class="insight-card">
+            <img src="{{ url_for('static', filename='img/3d/shield.svg') }}" alt="Security">
+            <div>
+                <h4>Privacy Protected</h4>
+                <p>Biometric embeddings are stored securely in the cloud. No raw images are saved.</p>
+            </div>
         </div>
     </div>
 
+    <!-- Floating background shapes -->
+    <div class="fluent-bg-shapes">
+        <img class="shape-3d" src="{{ url_for('static', filename='img/3d/plant.png') }}" style="bottom: 5%; left: 3%; width: 130px; animation-delay: 0s;">
+        <img class="shape-3d" src="{{ url_for('static', filename='img/3d/sphere.png') }}" style="bottom: 8%; right: 4%; width: 90px; animation-delay: 2s;">
+    </div>
+
     <!-- Modal for Add Student -->
-    <div id="add-student-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; background: rgba(11,15,25,0.4); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center;">
+    <div id="add-student-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; background: rgba(11,15,25,0.4); backdrop-filter: blur(8px); align-items: center; justify-content: center;">
         <div class="glass-card" style="width: 100%; max-width: 440px; padding: 32px; background: rgba(255,255,255,0.9); border-color: rgba(91,91,214,0.15); box-shadow: var(--shadow-premium);">
             <h4 style="color: var(--text-dark); font-size: 1.25rem; font-weight: 700; margin-bottom: 12px;">Enroll Student Profile</h4>
             <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 24px; font-weight: 500;">Create a profile now. The student can complete biometrics training via portal login.</p>
-            
+
             <div class="form-group">
                 <label>Student Full Name</label>
                 <input type="text" id="new-student-name" class="form-control" placeholder="E.g. Alexander Vance">
@@ -103,12 +158,11 @@
         const name = document.getElementById('new-student-name').value.trim();
         if (!name) return;
 
-        // For simple student creation, we send empty face/voice embeddings (enrolling happens via Student register tabs)
         try {
             const formData = new FormData();
             formData.append('name', name);
-            formData.append('face_image', 'data:image/jpeg;base64,'); // placeholder, can be trained later
-            
+            formData.append('face_image', 'data:image/jpeg;base64,');
+
             const res = await fetch('/api/register_student', {
                 method: 'POST',
                 body: formData
@@ -126,7 +180,7 @@
 
     async function deleteStudentProfile(studentId) {
         if (!confirm('Are you sure you want to delete this student profile? This deletes all associated attendance records.')) return;
-        
+
         try {
             const res = await fetch('/api/delete_student', {
                 method: 'POST',

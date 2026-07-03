@@ -3,7 +3,7 @@
 {% block title %}Login using password | Fluentia{% endblock %}
 
 {% block guest_content %}
-<div
+<div class="guest-shell auth-shell"
     style="min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; padding: 40px 80px; position: relative; align-items: center;">
 
     <!-- Go Back to Home (Top Right) -->
@@ -16,13 +16,13 @@
     </div>
 
     <!-- Top Logo Block (Horizontal Grid matching Image 4) -->
-    <div
-        style="text-align: center; margin-top: 20px; display: flex; align-items: center; gap: 16px; justify-content: center;">
+    <div class="brand-lockup"
+        style="text-align: center; margin-top: 36px; display: flex; align-items: center; gap: 16px; justify-content: center; flex-wrap: nowrap;">
         <img src="{{ url_for('static', filename='img/3d/logo.png') }}" alt="Fluentia Logo"
             style="height: 64px; border-radius: 16px; box-shadow: 0 8px 24px rgba(91, 91, 214, 0.15);">
-        <h1
-            style="font-family: 'Inter', sans-serif; font-size: 2.2rem; font-weight: 800; color: var(--text-dark); letter-spacing: -1px; text-transform: uppercase; line-height: 1.1; display: flex; align-items: center; gap: 8px;">
-            <span style="color: var(--text-dark);">FLUENT</span><span style="color: var(--primary);">IA</span>
+        <h1 class="brand-wordmark"
+            style="font-family: 'Inter', sans-serif; font-size: 2.2rem; font-weight: 800; color: var(--text-dark); letter-spacing: 0; line-height: 1.1; margin: 0;">
+            Fluentia
         </h1>
     </div>
 
@@ -83,6 +83,8 @@
             100% { opacity: 0.4; }
         }
     </style>
+
+    <div class="auth-composition">
 
     <!-- Login Card (Image 2 Style with Tabs) -->
     <div class="glass-card"
@@ -175,6 +177,19 @@
                 </a>
             </div>
         </div>
+    </div>
+
+    <aside class="auth-art-panel">
+        <div>
+            <h2>Smart access for every classroom</h2>
+            <p>Teachers use credentials, students use face verification, and attendance stays connected to the same biometric record.</p>
+        </div>
+        <div class="mini-stat-list">
+            <div class="mini-stat"><span>Teacher Portal</span><strong>Password</strong></div>
+            <div class="mini-stat"><span>Student Portal</span><strong>Face ID</strong></div>
+            <div class="mini-stat"><span>Session</span><strong>Secure</strong></div>
+        </div>
+    </aside>
     </div>
 
     <!-- Floating 3D Icons matching image 4 EXACTLY -->

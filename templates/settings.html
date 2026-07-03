@@ -4,8 +4,8 @@
 
 {% block content %}
 <div>
-    <div class="content-header" style="display: flex; align-items: center; gap: 20px;">
-        <img src="{{ url_for('static', filename='img/3d/settings.svg') }}" alt="System Settings" style="height: 80px; width: auto; filter: drop-shadow(0 8px 20px rgba(91,91,214,0.2)); flex-shrink: 0;">
+    <div class="content-header visual-header" style="display: flex; align-items: center; gap: 20px;">
+        <img class="header-illustration" src="{{ url_for('static', filename='img/3d/settings.svg') }}" alt="System Settings">
         <div class="content-title">
             <h2>System Settings</h2>
             <p>Adjust system configurations, biometric classification bounds, and tolerances.</p>
@@ -13,7 +13,8 @@
     </div>
 
     <!-- Settings card -->
-    <div class="glass-card" style="max-width: 680px; padding: 40px; border-radius: 20px; background: rgba(255, 255, 255, 0.85); box-shadow: var(--shadow-soft);">
+    <div class="settings-layout">
+    <div class="glass-card" style="padding: 40px; border-radius: 20px; background: rgba(255, 255, 255, 0.85); box-shadow: var(--shadow-soft);">
         
         <form id="settings-form" onsubmit="saveSystemSettings(event)">
             
@@ -60,6 +61,20 @@
             </button>
         </form>
     </div>
+
+    <aside class="side-visual-panel">
+        <div>
+            <img src="{{ url_for('static', filename='img/3d/shield.svg') }}" alt="Security shield">
+            <h3>Classifier control room</h3>
+            <p>Tune recognition thresholds carefully when lighting, microphones, or enrolled profile quality changes.</p>
+        </div>
+        <div class="mini-stat-list">
+            <div class="mini-stat"><span>Face threshold</span><strong id="face-mini">{{ config.face_threshold }}</strong></div>
+            <div class="mini-stat"><span>Voice threshold</span><strong id="voice-mini">{{ config.voice_threshold }}</strong></div>
+            <div class="mini-stat"><span>Pipeline</span><strong>Online</strong></div>
+        </div>
+    </aside>
+    </div>
 </div>
 
 <script>
@@ -67,6 +82,8 @@
         const slider = document.getElementById(rangeId);
         const display = document.getElementById(valId);
         display.textContent = slider.value;
+        const mini = document.getElementById(rangeId === 'face-range' ? 'face-mini' : 'voice-mini');
+        if (mini) mini.textContent = slider.value;
     }
 
     async function saveSystemSettings(event) {

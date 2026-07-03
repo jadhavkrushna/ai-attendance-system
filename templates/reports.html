@@ -4,8 +4,8 @@
 
 {% block content %}
 <div>
-    <div class="content-header" style="display: flex; align-items: center; gap: 20px;">
-        <img src="{{ url_for('static', filename='img/3d/assessment.svg') }}" alt="Analytics" style="height: 80px; width: auto; filter: drop-shadow(0 8px 20px rgba(91,91,214,0.2)); flex-shrink: 0;">
+    <div class="content-header visual-header" style="display: flex; align-items: center; gap: 20px;">
+        <img class="header-illustration" src="{{ url_for('static', filename='img/3d/assessment.svg') }}" alt="Analytics">
         <div class="content-title">
             <h2>Reports & Analytics</h2>
             <p>Review course metrics and compare attendance rates.</p>
@@ -13,7 +13,7 @@
     </div>
 
     <!-- Analytics grid -->
-    <div style="display: grid; grid-template-columns: 1.6fr 1fr; gap: 40px; margin-bottom: 40px;">
+    <div class="reports-analytics-grid" style="display: grid; grid-template-columns: 1.6fr 1fr; gap: 40px; margin-bottom: 40px;">
         
         <!-- Course Comparison Bar Chart Card -->
         <div class="glass-card" style="padding: 32px; border-radius: 20px; background: rgba(255, 255, 255, 0.85); box-shadow: var(--shadow-soft);">
@@ -23,8 +23,9 @@
                 {% if comparison_labels %}
                 <canvas id="subject-comparison-chart"></canvas>
                 {% else %}
-                <div style="display: flex; height: 100%; align-items: center; justify-content: center; color: var(--text-muted); font-weight: 600;">
-                    No subjects registered to compare.
+                <div style="display: flex; height: 100%; align-items: center; justify-content: center; color: var(--text-muted); font-weight: 600; flex-direction: column; gap: 14px; text-align: center;">
+                    <img src="{{ url_for('static', filename='img/3d/analytics.svg') }}" alt="No chart data" style="height: 120px; width: auto; filter: drop-shadow(0 14px 24px rgba(91,91,214,0.12));">
+                    <span>No subjects registered to compare.</span>
                 </div>
                 {% endif %}
             </div>
@@ -33,7 +34,7 @@
         <!-- Key Performance Card (Reports spec decoration) -->
         <div class="glass-card" style="padding: 32px; border-radius: 20px; background: rgba(255, 255, 255, 0.85); box-shadow: var(--shadow-soft); display: flex; flex-direction: column; justify-content: space-between; position: relative;">
             <div>
-                <img src="{{ url_for('static', filename='img/3d/check_circle.svg') }}" style="height: 64px; width: auto; position: absolute; top: 24px; right: 24px; filter: drop-shadow(0 6px 12px rgba(91, 91, 214, 0.1));" alt="Check">
+                <img src="{{ url_for('static', filename='img/3d/success.svg') }}" style="height: 64px; width: auto; position: absolute; top: 24px; right: 24px; filter: drop-shadow(0 6px 12px rgba(91, 91, 214, 0.1));" alt="Check">
                 <h4 style="color: var(--text-dark); font-size: 1.15rem; font-weight: 700; margin-bottom: 12px; padding-right: 70px;"><i class="fa-solid fa-square-poll-vertical" style="margin-right: 8px; color: var(--primary);"></i> Academic Summary</h4>
                 <p style="color: var(--text-muted); font-size: 0.85rem; font-weight: 500; line-height: 1.4; margin-bottom: 24px; padding-right: 40px;">Biometric attendance rates are monitored daily. Defaulters fall below the 75.0% threshold.</p>
             </div>
@@ -55,6 +56,30 @@
             </a>
         </div>
 
+    </div>
+
+    <div class="insight-strip">
+        <div class="insight-card">
+            <img src="{{ url_for('static', filename='img/3d/calendar_month.svg') }}" alt="Calendar">
+            <div>
+                <h4>Daily patterns</h4>
+                <p>Compare course consistency across the week.</p>
+            </div>
+        </div>
+        <div class="insight-card">
+            <img src="{{ url_for('static', filename='img/3d/warning.svg') }}" alt="Warning">
+            <div>
+                <h4>Defaulter signals</h4>
+                <p>Use the 75% threshold to find students needing follow-up.</p>
+            </div>
+        </div>
+        <div class="insight-card">
+            <img src="{{ url_for('static', filename='img/3d/database.svg') }}" alt="Database">
+            <div>
+                <h4>Synced records</h4>
+                <p>Reports are generated from the same biometric attendance source.</p>
+            </div>
+        </div>
     </div>
 
     <!-- Reports Page Specific 3D Book Stack Background Shape -->

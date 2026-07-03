@@ -4,8 +4,8 @@
 
 {% block content %}
 <div>
-    <div class="content-header" style="display: flex; align-items: center; gap: 20px;">
-        <img src="{{ url_for('static', filename='img/3d/menu_book.svg') }}" alt="QR Enrollment" style="height: 80px; width: auto; filter: drop-shadow(0 8px 20px rgba(91,91,214,0.2)); flex-shrink: 0;">
+    <div class="content-header visual-header" style="display: flex; align-items: center; gap: 20px;">
+        <img class="header-illustration" src="{{ url_for('static', filename='img/3d/menu_book.svg') }}" alt="Course Registry">
         <div class="content-title">
             <h2>Course Subjects Registry</h2>
             <p>Create subjects, obtain registry IDs, or share dynamic QR enrollment codes.</p>
@@ -22,27 +22,81 @@
         {% if subjects %}
             {% for sub in subjects %}
             <div class="subject-card-premium">
-                <span class="subject-badge">{{ sub.subject_code }}</span>
-                <h3>{{ sub.subject_name }}</h3>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;">
+                    <span class="subject-badge">{{ sub.subject_code }}</span>
+                    <img src="{{ url_for('static', filename='img/3d/qr_code.svg') }}" alt="QR code" style="width: 52px; height: 52px; filter: drop-shadow(0 8px 14px rgba(91,91,214,0.12));">
+                </div>
+                <h3>{{ sub.name }}</h3>
                 <p>Section / Batch: <strong>{{ sub.section }}</strong></p>
-                
+
+                <!-- Mini stats row -->
+                <div style="display: flex; gap: 10px; margin-top: 6px; margin-bottom: 18px;">
+                    <div style="flex:1; padding: 10px 14px; background: rgba(91,91,214,0.04); border: 1px solid rgba(91,91,214,0.1); border-radius: 12px; text-align:center;">
+                        <div style="font-size: 1.2rem; font-weight: 800; color: var(--primary);">{{ sub.total_students }}</div>
+                        <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Students</div>
+                    </div>
+                    <div style="flex:1; padding: 10px 14px; background: rgba(74,222,128,0.04); border: 1px solid rgba(74,222,128,0.12); border-radius: 12px; text-align:center;">
+                        <div style="font-size: 1.2rem; font-weight: 800; color: #107C41;">{{ sub.total_classes }}</div>
+                        <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">Sessions</div>
+                    </div>
+                </div>
+
                 <div style="display: flex; gap: 12px; width: 100%;">
-                    <button onclick="openShareSubjectModal('{{ sub.subject_id }}', '{{ sub.subject_name }}')" class="btn-pill" style="flex: 1; justify-content: center; padding: 10px 16px; font-size: 0.8rem; border-radius: 12px;">
+                    <button onclick="openShareSubjectModal('{{ sub.subject_id }}', '{{ sub.name }}')" class="btn-pill" style="flex: 1; justify-content: center; padding: 10px 16px; font-size: 0.8rem; border-radius: 12px;">
                         <i class="fa-solid fa-qrcode" style="margin-right: 6px;"></i> Share Portal
                     </button>
                 </div>
             </div>
             {% endfor %}
         {% else %}
-            <div class="glass-card" style="grid-column: 1 / -1; text-align: center; padding: 64px 0;">
-                <i class="fa-solid fa-book-open" style="font-size: 3rem; color: rgba(91,91,214,0.1); margin-bottom: 16px;"></i>
-                <p style="color: var(--text-muted); font-weight: 600;">No subjects registered. Click "Create Course" to add your first course registry.</p>
+            <div class="glass-card" style="grid-column: 1 / -1; padding: 0;">
+                <div class="empty-state-rich">
+                    <img src="{{ url_for('static', filename='img/3d/library_add.svg') }}" alt="Create course">
+                    <div>
+                        <h4>No subjects registered</h4>
+                        <p>Create your first course registry, then share the QR enrollment portal with students.</p>
+                        <button onclick="openAddSubjectModal()" class="btn-pill">
+                            <i class="fa-solid fa-plus-circle"></i> Create Course
+                        </button>
+                    </div>
+                </div>
             </div>
         {% endif %}
     </div>
 
+    <!-- Insight strip -->
+    <div class="insight-strip" style="margin-top: 30px;">
+        <div class="insight-card">
+            <img src="{{ url_for('static', filename='img/3d/qr_code_scanner.svg') }}" alt="QR">
+            <div>
+                <h4>QR Enrollment</h4>
+                <p>Share a subject QR so students can self-enroll instantly from their phones.</p>
+            </div>
+        </div>
+        <div class="insight-card">
+            <img src="{{ url_for('static', filename='img/3d/groups.svg') }}" alt="Roster">
+            <div>
+                <h4>Live Roster</h4>
+                <p>Student and session counts update automatically after each biometric scan.</p>
+            </div>
+        </div>
+        <div class="insight-card">
+            <img src="{{ url_for('static', filename='img/3d/analytics.svg') }}" alt="Analytics">
+            <div>
+                <h4>Per-course Analytics</h4>
+                <p>Visit Reports to see attendance rates broken down by each registered course.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating background shapes -->
+    <div class="fluent-bg-shapes">
+        <img class="shape-3d" src="{{ url_for('static', filename='img/3d/plant.png') }}" style="bottom: 5%; left: 3%; width: 140px; animation-delay: 0s;">
+        <img class="shape-3d" src="{{ url_for('static', filename='img/3d/cube.png') }}" style="bottom: 8%; right: 4%; width: 100px; animation-delay: 1.5s;">
+    </div>
+
     <!-- Modal for Create Subject -->
-    <div id="add-subject-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; background: rgba(11,15,25,0.4); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center;">
+    <div id="add-subject-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; background: rgba(11,15,25,0.4); backdrop-filter: blur(8px); align-items: center; justify-content: center;">
         <div class="glass-card" style="width: 100%; max-width: 440px; padding: 32px; background: rgba(255,255,255,0.9); border-color: rgba(91,91,214,0.15); box-shadow: var(--shadow-premium);">
             <h4 style="color: var(--text-dark); font-size: 1.25rem; font-weight: 700; margin-bottom: 12px;">Create Subject Course</h4>
             <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 24px; font-weight: 500;">Enter course parameters to create active student rosters.</p>
@@ -70,7 +124,7 @@
     </div>
 
     <!-- Modal for Share Subject / QR Code -->
-    <div id="share-subject-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; background: rgba(11,15,25,0.4); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center;">
+    <div id="share-subject-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; background: rgba(11,15,25,0.4); backdrop-filter: blur(8px); align-items: center; justify-content: center;">
         <div class="glass-card" style="width: 100%; max-width: 440px; padding: 32px; background: rgba(255,255,255,0.9); border-color: rgba(91,91,214,0.15); box-shadow: var(--shadow-premium); text-align: center;">
             <h4 id="share-modal-title" style="color: var(--text-dark); font-size: 1.25rem; font-weight: 700; margin-bottom: 8px;">Enrollment Portal</h4>
             <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 24px; font-weight: 500;">Share this ID or dynamic QR code with students to join your subject.</p>
@@ -136,7 +190,6 @@
         const placeholder = document.getElementById('enrollment-qrcode-placeholder');
         placeholder.innerHTML = '';
 
-        // Generate QR code pointing to enrollment payload
         qrcodeInstance = new QRCode(placeholder, {
             text: subjectId,
             width: 160,
@@ -157,7 +210,6 @@
         input.setSelectionRange(0, 99999);
         navigator.clipboard.writeText(input.value);
         
-        // Custom temporary visual feedback
         const btn = document.querySelector('[onclick="copySubjectId()"]');
         const oldHtml = btn.innerHTML;
         btn.innerHTML = '<i class="fa-solid fa-check"></i>';

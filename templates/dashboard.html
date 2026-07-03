@@ -216,7 +216,7 @@
 
     <!-- Modal for Enroll Subject -->
     <div id="enroll-modal"
-        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; background: rgba(11,15,25,0.4); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center;">
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; background: rgba(11,15,25,0.4); backdrop-filter: blur(8px); align-items: center; justify-content: center;">
         <div class="glass-card"
             style="width: 100%; max-width: 440px; padding: 32px; background: rgba(255,255,255,0.9); border-color: rgba(91,91,214,0.15); box-shadow: var(--shadow-premium);">
             <h4 style="color: var(--text-dark); font-size: 1.25rem; font-weight: 700; margin-bottom: 12px;">Enroll In
@@ -276,9 +276,8 @@
 {% else %}
 <!-- Teacher Dashboard Layout -->
 <div>
-    <div class="content-header" style="display: flex; align-items: center; gap: 20px;">
-        <img src="{{ url_for('static', filename='img/3d/psychology.svg') }}" alt="AI Dashboard"
-            style="height: 80px; width: auto; filter: drop-shadow(0 8px 20px rgba(91,91,214,0.2)); flex-shrink: 0;">
+    <div class="content-header visual-header" style="display: flex; align-items: center; gap: 20px;">
+        <img class="header-illustration" src="{{ url_for('static', filename='img/3d/psychology.svg') }}" alt="AI Dashboard">
         <div class="content-title">
             <h2>Teacher Overview</h2>
             <p>Monitor class stats, courses size, and real-time biometric metrics.</p>
@@ -336,7 +335,31 @@
         </div>
     </div>
 
-    <div style="display: grid; grid-template-columns: 1.6fr 1fr; gap: 40px; margin-bottom: 40px;">
+    <div class="insight-strip">
+        <div class="insight-card">
+            <img src="{{ url_for('static', filename='img/3d/face.svg') }}" alt="Face scan">
+            <div>
+                <h4>Scan Ready</h4>
+                <p>Start a live classroom recognition session from the scanner page.</p>
+            </div>
+        </div>
+        <div class="insight-card">
+            <img src="{{ url_for('static', filename='img/3d/qr_code.svg') }}" alt="QR enrollment">
+            <div>
+                <h4>Share Courses</h4>
+                <p>Use QR portals to help students join their active subject rosters.</p>
+            </div>
+        </div>
+        <div class="insight-card">
+            <img src="{{ url_for('static', filename='img/3d/assessment.svg') }}" alt="Reports">
+            <div>
+                <h4>Track Trends</h4>
+                <p>Review reports to spot defaulters and improve attendance rhythm.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-analytics-grid" style="display: grid; grid-template-columns: 1.6fr 1fr; gap: 40px; margin-bottom: 40px;">
         <!-- Daily Attendance Rate Chart Card -->
         <div class="glass-card"
             style="padding: 32px; border-radius: 20px; background: rgba(255, 255, 255, 0.85); box-shadow: var(--shadow-soft);">
@@ -382,7 +405,7 @@
 
     <!-- Modal for Create Subject -->
     <div id="add-subject-modal"
-        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; background: rgba(11,15,25,0.4); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center;">
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; background: rgba(11,15,25,0.4); backdrop-filter: blur(8px); align-items: center; justify-content: center;">
         <div class="glass-card"
             style="width: 100%; max-width: 440px; padding: 32px; background: rgba(255,255,255,0.9); border-color: rgba(91,91,214,0.15); box-shadow: var(--shadow-premium);">
             <h4 style="color: var(--text-dark); font-size: 1.25rem; font-weight: 700; margin-bottom: 12px;">Create

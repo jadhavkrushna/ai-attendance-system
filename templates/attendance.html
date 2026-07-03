@@ -6,7 +6,8 @@
 <div style="position: relative;">
 
     <!-- Top Content Header -->
-    <div class="content-header" style="margin-bottom: 24px;">
+    <div class="content-header visual-header" style="margin-bottom: 24px; display: flex; align-items: center; gap: 20px;">
+        <img class="header-illustration" src="{{ url_for('static', filename='img/3d/fact_check.svg') }}" alt="Attendance logs">
         <div class="content-title">
             <h2 style="font-size: 2.2rem; font-weight: 800; color: var(--text-dark); letter-spacing: -0.5px;">Attendance Logs</h2>
             <p style="color: var(--text-muted); font-size: 0.95rem; font-weight: 600; margin-top: 4px;">Search, filter, and export all the attendance logs in action.</p>
@@ -20,7 +21,7 @@
 
     <!-- Filter Card (Image 1 Style) -->
     <div class="glass-card" style="padding: 24px 32px; border-radius: 20px; background: rgba(255, 255, 255, 0.85); box-shadow: var(--shadow-soft); margin-bottom: 30px; border-color: rgba(91,91,214,0.08);">
-        <form action="/attendance" method="GET" style="display: grid; grid-template-columns: 1.5fr 1.2fr 0.8fr 0.4fr; gap: 20px; align-items: flex-end;">
+        <form class="filter-form-grid" action="/attendance" method="GET" style="display: grid; grid-template-columns: 1.5fr 1.2fr 0.8fr 0.4fr; gap: 20px; align-items: flex-end;">
             <div class="form-group" style="margin-bottom: 0;">
                 <label style="font-weight: 700; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Search Student Name</label>
                 <div class="input-container-icon">
@@ -50,6 +51,30 @@
                 Clear
             </a>
         </form>
+    </div>
+
+    <div class="insight-strip">
+        <div class="insight-card">
+            <img src="{{ url_for('static', filename='img/3d/search.svg') }}" alt="Search">
+            <div>
+                <h4>Search quickly</h4>
+                <p>Find a student across every recorded subject log.</p>
+            </div>
+        </div>
+        <div class="insight-card">
+            <img src="{{ url_for('static', filename='img/3d/filter_list.svg') }}" alt="Filter">
+            <div>
+                <h4>Filter by course</h4>
+                <p>Review one subject at a time for cleaner audits.</p>
+            </div>
+        </div>
+        <div class="insight-card">
+            <img src="{{ url_for('static', filename='img/3d/download.svg') }}" alt="Export">
+            <div>
+                <h4>Export records</h4>
+                <p>Download a CSV when you need offline reporting.</p>
+            </div>
+        </div>
     </div>
 
     <!-- Logs Table Glass Card (Image 1 Style) -->
@@ -84,10 +109,15 @@
             </table>
             {% else %}
             <!-- Empty State Illustration Matching Image 1 -->
-            <div class="empty-state" style="padding: 60px 0;">
-                <img src="{{ url_for('static', filename='img/3d/qr_code_scanner.svg') }}" alt="No records found" style="height: 180px; width: auto; margin-bottom: 24px;">
-                <h4 style="font-size: 1.5rem; font-weight: 800; color: var(--text-dark);">No attendance records found</h4>
-                <p style="color: var(--text-muted); font-size: 0.95rem; font-weight: 600; margin-top: 6px;">No attendance records found match criteria.</p>
+            <div class="empty-state-rich">
+                <img src="{{ url_for('static', filename='img/3d/qr_code_scanner.svg') }}" alt="No records found">
+                <div>
+                    <h4>No attendance records found</h4>
+                    <p>No logs match the current criteria. Try clearing filters or scan a classroom to create the first record.</p>
+                    <a href="/recognition" class="btn-pill">
+                        <i class="fa-solid fa-camera"></i> Open Scanner
+                    </a>
+                </div>
             </div>
             {% endif %}
         </div>

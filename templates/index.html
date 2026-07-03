@@ -3,22 +3,24 @@
 {% block title %}Fluentia | Where Learning Meets Creativity{% endblock %}
 
 {% block guest_content %}
-<div
+<div class="guest-shell landing-shell"
     style="min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; padding: 40px 80px; position: relative;">
 
     <!-- Top Header / Navigation -->
     <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
-        <div style="text-align: center;">
+        <div class="brand-lockup"
+            style="display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: nowrap; text-align: left; margin-top: 36px;">
             <img src="{{ url_for('static', filename='img/3d/logo.png') }}" alt="Fluentia Logo"
                 style="height: 64px; border-radius: 16px; box-shadow: 0 8px 24px rgba(91, 91, 214, 0.15); margin-bottom: 12px;">
-            <h1
-                style="font-family: 'Inter', sans-serif; font-size: 3.2rem; font-weight: 800; color: var(--text-dark); letter-spacing: -2px; line-height: 1; text-transform: uppercase;">
-                FLUENT<br>IA
+            <h1 class="brand-wordmark"
+                style="font-family: 'Inter', sans-serif; font-size: 3.2rem; font-weight: 800; color: var(--text-dark); letter-spacing: 0; line-height: 1; margin: 0;">
+                Fluentia
             </h1>
-            <p style="color: var(--text-muted); font-size: 1.15rem; font-weight: 600; margin-top: 10px;">Where Learning
-                Meets Creativity</p>
         </div>
     </div>
+
+    <p style="color: var(--text-muted); font-size: 1.15rem; font-weight: 600; margin-top: 10px; text-align: center;">
+        Where Learning Meets Creativity</p>
 
     <!-- Center Cards Section -->
     <div class="landing-cards-container">
@@ -58,6 +60,30 @@
                 style="width: 80%; justify-content: center; font-size: 1rem; padding: 14px 28px;">
                 Teacher Portal <i class="fa-solid fa-arrow-right" style="margin-left: 8px;"></i>
             </a>
+        </div>
+    </div>
+
+    <div class="insight-strip" style="max-width: 1000px; width: 100%; margin: -28px auto 52px; padding: 0 20px;">
+        <div class="insight-card">
+            <img src="{{ url_for('static', filename='img/3d/face.svg') }}" alt="Face ID">
+            <div>
+                <h4>Face attendance</h4>
+                <p>Students verify with camera-based biometric recognition.</p>
+            </div>
+        </div>
+        <div class="insight-card">
+            <img src="{{ url_for('static', filename='img/3d/qr_code.svg') }}" alt="QR code">
+            <div>
+                <h4>QR enrolment</h4>
+                <p>Teachers share subject portals in seconds.</p>
+            </div>
+        </div>
+        <div class="insight-card">
+            <img src="{{ url_for('static', filename='img/3d/analytics.svg') }}" alt="Analytics">
+            <div>
+                <h4>Live analytics</h4>
+                <p>Attendance trends and warnings stay visible.</p>
+            </div>
         </div>
     </div>
 
