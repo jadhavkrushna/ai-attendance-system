@@ -42,6 +42,11 @@ def create_student(new_name, face_embedding=None, voice_embedding=None):
     response = supabase.table('students').insert(data).execute()
     return response.data
 
+def check_student_exists_by_name(name):
+    """Returns True if a student with the same name already exists."""
+    response = supabase.table('students').select('student_id').ilike('name', name.strip()).execute()
+    return len(response.data) > 0
+
 
 def create_subject(subject_code, name, section, teacher_id):
     data = {"subject_code": subject_code, "name": name, "section": section, "teacher_id": teacher_id}

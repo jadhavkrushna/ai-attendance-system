@@ -14,7 +14,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 # Supabase database wrapper methods
 from src.database.db import (
     teacher_login, create_teacher, check_teacher_exists,
-    get_all_students, create_student,
+    get_all_students, create_student, check_student_exists_by_name,
     create_subject, get_teacher_subjects,
     enroll_student_to_subject, unenroll_student_to_subject,
     get_student_subjects, get_student_attendance,
@@ -89,18 +89,28 @@ def register_route():
         
     if request.method == 'POST':
         role = request.form.get('role', 'teacher')
-        username = request.form.get('username')
-        password = request.form.get('password')
-        name = request.form.get('name')
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '')
+        confirm_password = request.form.get('confirm_password', '')
+        name = request.form.get('name', '').strip()
         
         if role == 'teacher':
-            if check_teacher_exists(username):
-                flash('Username already taken.', 'error')
+            # --- Validation ---
+            if not username or not name or not password:
+                flash('All fields are required.', 'error')
+            elif len(username) < 3:
+                flash('Username must be at least 3 characters long.', 'error')
+            elif len(password) < 6:
+                flash('Password must be at least 6 characters long.', 'error')
+            elif password != confirm_password:
+                flash('Passwords do not match. Please try again.', 'error')
+            elif check_teacher_exists(username):
+                flash(f'Username "{username}" is already registered. Please choose a different one or login.', 'error')
             else:
                 try:
                     create_teacher(username, password, name)
-                    flash('Account created successfully! Please login.', 'success')
-                    return redirect(url_for('login_route'))
+                    flash(f'Teacher account created successfully! Welcome, {name}. Please login.', 'success')
+                    return redirect(url_for('login_route') + '?role=teacher')
                 except Exception as e:
                     flash(f'Registration failed: {str(e)}', 'error')
                     
@@ -363,12 +373,25 @@ def api_login_face():
 
 @app.route('/api/register_student', methods=['POST'])
 def api_register_student():
-    name = request.form.get('name')
+    name = request.form.get('name', '').strip()
     face_img_b64 = request.form.get('face_image')
     voice_file = request.files.get('voice_clip')
     
-    if not name or not face_img_b64:
-        return jsonify({'success': False, 'message': 'Missing name or photo.'}), 400
+    # --- Validation ---
+    if not name:
+        return jsonify({'success': False, 'message': 'Student name is required.'}), 400
+    if len(name) < 2:
+        return jsonify({'success': False, 'message': 'Name must be at least 2 characters.'}), 400
+    if not face_img_b64:
+        return jsonify({'success': False, 'message': 'Face photo is required for biometric enrolment.'}), 400
+    
+    # Check if student with same name already registered
+    if check_student_exists_by_name(name):
+        return jsonify({
+            'success': False,
+            'message': f'A student named "{name}" is already registered. If this is you, please use the Student Login instead.',
+            'already_registered': True
+        }), 409
         
     try:
         if ',' in face_img_b64:
@@ -380,7 +403,7 @@ def api_register_student():
         # Extract face embeddings
         encodings = get_face_embeddings(img_arr)
         if not encodings:
-            return jsonify({'success': False, 'message': 'Could not extract facial features. Adjust lighting.'})
+            return jsonify({'success': False, 'message': 'No face detected in the photo. Please ensure your face is clearly visible and well-lit.'})
             
         face_emb = encodings[0].tolist()
         
@@ -399,9 +422,9 @@ def api_register_student():
             session['user_id'] = student['student_id']
             session['name'] = student['name']
             session['role'] = 'student'
-            return jsonify({'success': True})
+            return jsonify({'success': True, 'message': f'Welcome, {name}! Your biometric profile has been registered.'})
             
-        return jsonify({'success': False, 'message': 'Supabase insert failed.'})
+        return jsonify({'success': False, 'message': 'Database insert failed. Please try again.'})
     except Exception as e:
         return jsonify({'success': False, 'message': f'Server error: {str(e)}'}), 500
 
