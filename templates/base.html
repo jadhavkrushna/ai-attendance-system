@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SnapClass | AI Powered Attendance System{% endblock %}</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/app_logo.png') }}">
+    <!-- FontAwesome & Fluent Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <!-- Persistent Floating 3D Geometric Objects (Background Decoration) -->
+    <div class="fluent-bg-shapes">
+        <!-- Floating purple sphere (top left) -->
+        <img class="shape-3d" src="{{ url_for('static', filename='img/3d_sphere_purple.png') }}" style="top: 12%; left: 5%; width: 40px; animation-delay: 0s;">
+        <!-- Floating purple cube (middle right) -->
+        <img class="shape-3d" src="{{ url_for('static', filename='img/3d_cube_purple.png') }}" style="top: 25%; right: 8%; width: 40px; animation-delay: 1.5s;">
+        <!-- Floating pink sphere (bottom right) -->
+        <img class="shape-3d" src="{{ url_for('static', filename='img/3d_sphere_pink.png') }}" style="bottom: 12%; right: 6%; width: 25px; animation-delay: 3.5s;">
+        <!-- Floating purple sphere (bottom left) -->
+        <img class="shape-3d" src="{{ url_for('static', filename='img/3d_sphere_purple.png') }}" style="bottom: 18%; left: 5%; width: 35px; animation-delay: 2.2s;">
+    </div>
+
+    {% if session.get('user_id') %}
+    <!-- Logged in State Layout: SaaS Sidebar Layout -->
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <img src="{{ url_for('static', filename='img/app_logo.png') }}" alt="Logo" style="height: 48px; border-radius: 12px;">
+                <div class="logo-text" style="font-size: 1.6rem; margin-left: 8px;">SnapClass</div>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li class="sidebar-item {% if active_page == 'dashboard' %}active{% endif %}">
+                    <a href="/dashboard">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                {% if session.get('role') == 'teacher' %}
+                <li class="sidebar-item {% if active_page == 'recognition' %}active{% endif %}">
+                    <a href="/recognition">
+                        <i class="fa-solid fa-camera"></i>
+                        <span>Live Scanner</span>
+                    </a>
+                </li>
+                <li class="sidebar-item {% if active_page == 'students' %}active{% endif %}">
+                    <a href="/students">
+                        <i class="fa-solid fa-user-graduate"></i>
+                        <span>Students</span>
+                    </a>
+                </li>
+                <li class="sidebar-item {% if active_page == 'subjects' %}active{% endif %}">
+                    <a href="/subjects">
+                        <i class="fa-solid fa-book"></i>
+                        <span>Subjects</span>
+                    </a>
+                </li>
+                <li class="sidebar-item {% if active_page == 'attendance' %}active{% endif %}">
+                    <a href="/attendance">
+                        <i class="fa-solid fa-clipboard-list"></i>
+                        <span>Attendance Logs</span>
+                    </a>
+                </li>
+                <li class="sidebar-item {% if active_page == 'reports' %}active{% endif %}">
+                    <a href="/reports">
+                        <i class="fa-solid fa-file-invoice"></i>
+                        <span>Reports</span>
+                    </a>
+                </li>
+                {% endif %}
+                <li class="sidebar-item {% if active_page == 'settings' %}active{% endif %}">
+                    <a href="/settings">
+                        <i class="fa-solid fa-sliders"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Sidebar User Card matching Image 1 -->
+            <div class="sidebar-user-card">
+                <div class="sidebar-user-meta">
+                    <div class="sidebar-user-avatar">
+                        {{ session.get('name', 'T')[0] | upper }}
+                    </div>
+                    <div class="sidebar-user-info">
+                        <h5>{{ session.get('name', 'Teacher') }}</h5>
+                        <p>{{ session.get('role', 'Member') | capitalize }}</p>
+                    </div>
+                </div>
+                <a href="/logout" class="btn-pill-pink" style="width: 100%; justify-content: center; padding: 10px; font-size: 0.9rem;">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <!-- Flash Notification -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash-message {{ category }}">
+                            <span><i class="fa-solid {% if category == 'success' %}fa-circle-check{% else %}fa-circle-exclamation{% endif %} mr-2"></i> {{ message }}</span>
+                            <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+    {% else %}
+    <!-- Logged out State Layout: Guest layouts -->
+    <div style="min-height: 100vh; position: relative; z-index: 1;">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div style="position: fixed; top: 20px; right: 20px; z-index: 9999; max-width: 400px; width: 100%;">
+                    {% for category, message in messages %}
+                        <div class="flash-message {{ category }}" style="box-shadow: var(--shadow-premium);">
+                            <span><i class="fa-solid {% if category == 'success' %}fa-circle-check{% else %}fa-circle-exclamation{% endif %} mr-2"></i> {{ message }}</span>
+                            <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block guest_content %}{% endblock %}
+    </div>
+    {% endif %}
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

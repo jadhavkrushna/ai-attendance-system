@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Register your teacher profile | SnapClass{% endblock %}
+
+{% block guest_content %}
+<div style="min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; padding: 40px 80px; position: relative; align-items: center;">
+
+    <!-- Go Back to Home (Top Right) -->
+    <div style="position: absolute; top: 40px; right: 80px;">
+        <a href="/" class="btn-pill-pink" style="padding: 10px 24px; font-size: 0.85rem; display: flex; align-items: center; gap: 8px;">
+            <i class="fa-solid fa-arrow-left"></i> Go back to Home <span style="font-size: 0.75rem; opacity: 0.8; margin-left: 4px;">Ctrl + Backspace</span>
+        </a>
+    </div>
+
+    <!-- Top Logo Block -->
+    <div style="text-align: center; margin-top: 20px; display: flex; flex-direction: column; align-items: center;">
+        <img src="{{ url_for('static', filename='img/app_logo.png') }}" alt="SnapClass Logo" style="height: 64px; border-radius: 16px; box-shadow: 0 8px 24px rgba(91, 91, 214, 0.15); margin-bottom: 12px;">
+        <h1 style="font-family: 'Inter', sans-serif; font-size: 2.2rem; font-weight: 800; color: var(--text-dark); letter-spacing: -1px; text-transform: uppercase; line-height: 1.1;">
+            SNAP<br>CLASS
+        </h1>
+    </div>
+
+    <!-- Registration Card (Image 4 Style) -->
+    <div class="glass-card" style="width: 100%; max-width: 540px; padding: 40px; border-radius: 28px; box-shadow: var(--shadow-premium); background: rgba(255, 255, 255, 0.75); margin: 32px 0;">
+        <div style="text-align: center; margin-bottom: 28px;">
+            <h2 style="font-size: 1.95rem; font-weight: 800; color: var(--text-dark); letter-spacing: -0.5px;">Register your teacher profile</h2>
+            <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 8px; font-weight: 500;">Create your account to get started with Snap Class</p>
+        </div>
+
+        <form id="reg-form-submit" action="/register" method="POST">
+            <input type="hidden" name="role" value="teacher">
+            
+            <div class="form-group">
+                <label for="reg-username" style="font-weight: 600; font-size: 0.9rem; color: var(--text-dark); margin-bottom: 8px;">Enter username</label>
+                <div class="input-container-icon">
+                    <i class="fa-regular fa-user input-icon"></i>
+                    <input type="text" id="reg-username" name="username" class="form-control-icon" placeholder="ananyaroy" required style="border-radius: 20px; background: rgba(255, 255, 255, 0.9); border-color: #EAE8FF;">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="reg-name" style="font-weight: 600; font-size: 0.9rem; color: var(--text-dark); margin-bottom: 8px;">Enter name</label>
+                <div class="input-container-icon">
+                    <i class="fa-regular fa-user input-icon"></i>
+                    <input type="text" id="reg-name" name="name" class="form-control-icon" placeholder="Ananya Roy" required style="border-radius: 20px; background: rgba(255, 255, 255, 0.9); border-color: #EAE8FF;">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="reg-password" style="font-weight: 600; font-size: 0.9rem; color: var(--text-dark); margin-bottom: 8px;">Enter password</label>
+                <div class="input-container-icon">
+                    <i class="fa-solid fa-lock input-icon"></i>
+                    <input type="password" id="reg-password" name="password" class="form-control-icon" placeholder="••••••••" required style="border-radius: 20px; background: rgba(255, 255, 255, 0.9); border-color: #EAE8FF;">
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 32px;">
+                <label for="reg-confirm-password" style="font-weight: 600; font-size: 0.9rem; color: var(--text-dark); margin-bottom: 8px;">Confirm your password</label>
+                <div class="input-container-icon">
+                    <i class="fa-solid fa-lock input-icon"></i>
+                    <input type="password" id="reg-confirm-password" name="confirm_password" class="form-control-icon" placeholder="••••••••" required style="border-radius: 20px; background: rgba(255, 255, 255, 0.9); border-color: #EAE8FF;">
+                </div>
+            </div>
+
+            <!-- Action Buttons Grid (Image 4 style) -->
+            <div style="display: flex; gap: 16px; width: 100%;">
+                <button type="submit" class="btn-pill-pink" style="flex: 1; justify-content: center; padding: 16px; font-size: 0.95rem; border-radius: 20px;">
+                    <i class="fa-solid fa-user-plus"></i> Register now <span style="font-size: 0.75rem; opacity: 0.8; margin-left: 4px;">Ctrl + Enter</span>
+                </button>
+                <a href="/login" class="btn-pill" style="flex: 1; justify-content: center; padding: 16px; font-size: 0.95rem; border-radius: 20px; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);">
+                    <i class="fa-solid fa-right-to-bracket"></i> Login Instead
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Floating 3D Icons -->
+    <div class="fluent-bg-shapes">
+        <!-- Student+Teacher (top left) -->
+        <img class="shape-3d" src="{{ url_for('static', filename='img/icon_student_teacher.png') }}" style="top: 12%; left: 8%; width: 150px; animation-delay: 0s;">
+        <!-- AI Brain (top right) -->
+        <img class="shape-3d" src="{{ url_for('static', filename='img/icon_ai_brain.png') }}" style="top: 12%; right: 8%; width: 140px; animation-delay: 1s;">
+        <!-- ID Card (bottom left) -->
+        <img class="shape-3d" src="{{ url_for('static', filename='img/icon_id_card.png') }}" style="bottom: 5%; left: 6%; width: 150px; animation-delay: 2s;">
+        <!-- Cloud DB (bottom right) -->
+        <img class="shape-3d" src="{{ url_for('static', filename='img/icon_cloud_database.png') }}" style="bottom: 5%; right: 6%; width: 140px; animation-delay: 2.8s;">
+    </div>
+
+    <!-- Bottom Footer -->
+    <div class="bottom-branding" style="margin-bottom: 20px;">
+        Created with <i class="fa-solid fa-heart" style="color: var(--danger);"></i> by <strong>APNA COLLEGE</strong>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}Reports & Analytics | SnapClass{% endblock %}
+
+{% block content %}
+<div>
+    <div class="content-header" style="display: flex; align-items: center; gap: 20px;">
+        <img src="{{ url_for('static', filename='img/icon_reports.png') }}" alt="Analytics" style="height: 80px; width: auto; filter: drop-shadow(0 8px 20px rgba(91,91,214,0.2)); flex-shrink: 0;">
+        <div class="content-title">
+            <h2>Reports & Analytics</h2>
+            <p>Review course metrics and compare attendance rates.</p>
+        </div>
+    </div>
+
+    <!-- Analytics grid -->
+    <div style="display: grid; grid-template-columns: 1.6fr 1fr; gap: 40px; margin-bottom: 40px;">
+        
+        <!-- Course Comparison Bar Chart Card -->
+        <div class="glass-card" style="padding: 32px; border-radius: 20px; background: rgba(255, 255, 255, 0.85); box-shadow: var(--shadow-soft);">
+            <h4 style="color: var(--text-dark); font-size: 1.15rem; font-weight: 700; margin-bottom: 24px;"><i class="fa-solid fa-chart-bar" style="margin-right: 8px; color: var(--primary);"></i> Attendance Rates By Subject Course (%)</h4>
+            
+            <div style="height: 320px; position: relative;">
+                {% if comparison_labels %}
+                <canvas id="subject-comparison-chart"></canvas>
+                {% else %}
+                <div style="display: flex; height: 100%; align-items: center; justify-content: center; color: var(--text-muted); font-weight: 600;">
+                    No subjects registered to compare.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Key Performance Card (Reports spec decoration) -->
+        <div class="glass-card" style="padding: 32px; border-radius: 20px; background: rgba(255, 255, 255, 0.85); box-shadow: var(--shadow-soft); display: flex; flex-direction: column; justify-content: space-between; position: relative;">
+            <div>
+                <img src="{{ url_for('static', filename='img/3d_clipboard_check.png') }}" style="height: 64px; width: auto; position: absolute; top: 24px; right: 24px; filter: drop-shadow(0 6px 12px rgba(91, 91, 214, 0.1));" alt="Check">
+                <h4 style="color: var(--text-dark); font-size: 1.15rem; font-weight: 700; margin-bottom: 12px; padding-right: 70px;"><i class="fa-solid fa-square-poll-vertical" style="margin-right: 8px; color: var(--primary);"></i> Academic Summary</h4>
+                <p style="color: var(--text-muted); font-size: 0.85rem; font-weight: 500; line-height: 1.4; margin-bottom: 24px; padding-right: 40px;">Biometric attendance rates are monitored daily. Defaulters fall below the 75.0% threshold.</p>
+            </div>
+
+            <!-- Mini stats list -->
+            <div style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; background: #ffffff; border: 1px solid var(--border-color); border-radius: 16px;">
+                    <span style="font-weight: 700; color: var(--text-dark); font-size: 0.9rem;">Defaulters Count</span>
+                    <span style="font-size: 0.8rem; color: var(--danger); font-weight: 700; background: rgba(251, 113, 133, 0.12); padding: 4px 10px; border-radius: 6px;">Active Tracking</span>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; background: #ffffff; border: 1px solid var(--border-color); border-radius: 16px;">
+                    <span style="font-weight: 700; color: var(--text-dark); font-size: 0.9rem;">Target Threshold</span>
+                    <span style="font-size: 0.8rem; color: var(--primary); font-weight: 700; background: rgba(91, 91, 214, 0.08); padding: 4px 10px; border-radius: 6px;">75.0% Min</span>
+                </div>
+            </div>
+
+            <a href="/attendance" class="btn-pill" style="justify-content: center; width: 100%;">
+                <i class="fa-solid fa-list-check" style="margin-right: 6px;"></i> View Defaulters Roster
+            </a>
+        </div>
+
+    </div>
+
+    <!-- Reports Page Specific 3D Book Stack Background Shape -->
+    <div class="fluent-bg-shapes">
+        <img class="shape-3d" src="{{ url_for('static', filename='img/icon_charts_tablet.png') }}" style="bottom: 8%; right: 6%; width: 130px; animation-delay: 1s;">
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const canvas = document.getElementById('subject-comparison-chart');
+        if (!canvas) return;
+        
+        const ctx = canvas.getContext('2d');
+        const labels = {{ comparison_labels | tojson | safe if comparison_labels else '[]' }};
+        const dataset = {{ comparison_dataset | tojson | safe if comparison_dataset else '[]' }};
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: dataset,
+                    backgroundColor: ['rgba(91, 91, 214, 0.75)', 'rgba(122, 108, 245, 0.75)', 'rgba(201, 195, 255, 0.75)', 'rgba(232, 229, 255, 0.75)'],
+                    borderRadius: 8,
+                    borderWidth: 0,
+                    barThickness: 32
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        min: 0,
+                        max: 100,
+                        grid: { color: 'rgba(91, 91, 214, 0.04)' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}Attendance Logs | SnapClass{% endblock %}
+
+{% block content %}
+<div style="position: relative;">
+
+    <!-- Top Content Header -->
+    <div class="content-header" style="margin-bottom: 24px;">
+        <div class="content-title">
+            <h2 style="font-size: 2.2rem; font-weight: 800; color: var(--text-dark); letter-spacing: -0.5px;">Attendance Logs</h2>
+            <p style="color: var(--text-muted); font-size: 0.95rem; font-weight: 600; margin-top: 4px;">Search, filter, and export all the attendance logs in action.</p>
+        </div>
+        <div>
+            <a href="/attendance/export" class="btn-pill-pink" style="padding: 10px 24px; font-size: 0.85rem; background: rgba(91, 91, 214, 0.08); color: var(--primary); border: 1px solid rgba(91, 91, 214, 0.15); box-shadow: none;">
+                <i class="fa-solid fa-file-csv" style="margin-right: 6px;"></i> Export CSV
+            </a>
+        </div>
+    </div>
+
+    <!-- Filter Card (Image 1 Style) -->
+    <div class="glass-card" style="padding: 24px 32px; border-radius: 20px; background: rgba(255, 255, 255, 0.85); box-shadow: var(--shadow-soft); margin-bottom: 30px; border-color: rgba(91,91,214,0.08);">
+        <form action="/attendance" method="GET" style="display: grid; grid-template-columns: 1.5fr 1.2fr 0.8fr 0.4fr; gap: 20px; align-items: flex-end;">
+            <div class="form-group" style="margin-bottom: 0;">
+                <label style="font-weight: 700; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Search Student Name</label>
+                <div class="input-container-icon">
+                    <i class="fa-solid fa-magnifying-glass input-icon" style="color: var(--primary);"></i>
+                    <input type="text" name="search" class="form-control-icon" placeholder="Search name..." value="{{ search_query }}" style="border-radius: 16px; background: rgba(255, 255, 255, 0.9); padding-top: 12px; padding-bottom: 12px;">
+                </div>
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 0;">
+                <label style="font-weight: 700; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Filter Subject</label>
+                <div style="position: relative;">
+                    <select name="subject_id" class="form-control" style="border-radius: 16px; background: rgba(255, 255, 255, 0.9); padding: 12px 18px; appearance: none; padding-right: 40px; font-weight: 600; color: var(--text-dark);">
+                        <option value="">All Subjects</option>
+                        {% for sub in subjects %}
+                        <option value="{{ sub.subject_id }}" {% if selected_subject == sub.subject_id %}selected{% endif %}>{{ sub.subject_name }}</option>
+                        {% endfor %}
+                    </select>
+                    <i class="fa-solid fa-chevron-down" style="position: absolute; right: 18px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none;"></i>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-pill" style="padding: 12px 20px; font-size: 0.9rem; border-radius: 16px; justify-content: center; width: 100%;">
+                <i class="fa-solid fa-filter" style="margin-right: 6px;"></i> Apply Filters
+            </button>
+
+            <a href="/attendance" class="btn-pill-outline" style="padding: 12px 20px; font-size: 0.9rem; border-radius: 16px; justify-content: center; width: 100%; text-decoration: none; text-align: center;">
+                Clear
+            </a>
+        </form>
+    </div>
+
+    <!-- Logs Table Glass Card (Image 1 Style) -->
+    <div class="glass-card" style="padding: 32px; border-radius: 20px; background: rgba(255, 255, 255, 0.85); box-shadow: var(--shadow-premium); border-color: rgba(91,91,214,0.08);">
+        <div class="table-container" style="border: none; background: transparent;">
+            {% if logs %}
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th style="color: var(--text-muted); font-weight: 700; font-size: 0.8rem;">Student Name</th>
+                        <th style="color: var(--text-muted); font-weight: 700; font-size: 0.8rem;">Subject</th>
+                        <th style="color: var(--text-muted); font-weight: 700; font-size: 0.8rem;">Code / Sec</th>
+                        <th style="color: var(--text-muted); font-weight: 700; font-size: 0.8rem;">Timestamp</th>
+                        <th style="color: var(--text-muted); font-weight: 700; font-size: 0.8rem;">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in logs %}
+                    <tr>
+                        <td style="font-weight: 700; color: var(--text-dark);">{{ log.student_name }}</td>
+                        <td>{{ log.subject_name }}</td>
+                        <td style="font-family: monospace; font-size: 0.9rem;">{{ log.subject_code }} ({{ log.section }})</td>
+                        <td style="color: var(--text-muted); font-weight: 500;">{{ log.timestamp }}</td>
+                        <td>
+                            <span class="badge-status {{ log.status.lower() }}">
+                                <i class="fa-solid {% if log.status == 'Present' %}fa-circle-check{% else %}fa-circle-xmark{% endif %}"></i> {{ log.status }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <!-- Empty State Illustration Matching Image 1 -->
+            <div class="empty-state" style="padding: 60px 0;">
+                <img src="{{ url_for('static', filename='img/3d_clipboard_search.png') }}" alt="No records found" style="height: 180px; width: auto; margin-bottom: 24px;">
+                <h4 style="font-size: 1.5rem; font-weight: 800; color: var(--text-dark);">No attendance records found</h4>
+                <p style="color: var(--text-muted); font-size: 0.95rem; font-weight: 600; margin-top: 6px;">No attendance records found match criteria.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Floating Background Icons for Logs page -->
+    <div class="fluent-bg-shapes">
+        <!-- AI Brain (bottom-left) -->
+        <img class="shape-3d" src="{{ url_for('static', filename='img/icon_ai_brain.png') }}" style="bottom: 5%; left: 4%; width: 140px; animation-delay: 0s;">
+        <!-- Analytics Laptop (bottom-right) -->
+        <img class="shape-3d" src="{{ url_for('static', filename='img/icon_analytics_laptop.png') }}" style="bottom: 5%; right: 4%; width: 150px; animation-delay: 2s;">
+    </div>
+
+</div>
+{% endblock %}

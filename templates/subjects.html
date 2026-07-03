@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+
+{% block title %}Subject Management | SnapClass{% endblock %}
+
+{% block content %}
+<div>
+    <div class="content-header" style="display: flex; align-items: center; gap: 20px;">
+        <img src="{{ url_for('static', filename='img/icon_subjects.png') }}" alt="QR Enrollment" style="height: 80px; width: auto; filter: drop-shadow(0 8px 20px rgba(91,91,214,0.2)); flex-shrink: 0;">
+        <div class="content-title">
+            <h2>Course Subjects Registry</h2>
+            <p>Create subjects, obtain registry IDs, or share dynamic QR enrollment codes.</p>
+        </div>
+        <div style="margin-left: auto;">
+            <button onclick="openAddSubjectModal()" class="btn-pill">
+                <i class="fa-solid fa-plus-circle" style="margin-right: 6px;"></i> Create Course
+            </button>
+        </div>
+    </div>
+
+    <!-- Subjects Cards Grid -->
+    <div class="subjects-grid">
+        {% if subjects %}
+            {% for sub in subjects %}
+            <div class="subject-card-premium">
+                <span class="subject-badge">{{ sub.subject_code }}</span>
+                <h3>{{ sub.subject_name }}</h3>
+                <p>Section / Batch: <strong>{{ sub.section }}</strong></p>
+                
+                <div style="display: flex; gap: 12px; width: 100%;">
+                    <button onclick="openShareSubjectModal('{{ sub.subject_id }}', '{{ sub.subject_name }}')" class="btn-pill" style="flex: 1; justify-content: center; padding: 10px 16px; font-size: 0.8rem; border-radius: 12px;">
+                        <i class="fa-solid fa-qrcode" style="margin-right: 6px;"></i> Share Portal
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="glass-card" style="grid-column: 1 / -1; text-align: center; padding: 64px 0;">
+                <i class="fa-solid fa-book-open" style="font-size: 3rem; color: rgba(91,91,214,0.1); margin-bottom: 16px;"></i>
+                <p style="color: var(--text-muted); font-weight: 600;">No subjects registered. Click "Create Course" to add your first course registry.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Modal for Create Subject -->
+    <div id="add-subject-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; background: rgba(11,15,25,0.4); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center;">
+        <div class="glass-card" style="width: 100%; max-width: 440px; padding: 32px; background: rgba(255,255,255,0.9); border-color: rgba(91,91,214,0.15); box-shadow: var(--shadow-premium);">
+            <h4 style="color: var(--text-dark); font-size: 1.25rem; font-weight: 700; margin-bottom: 12px;">Create Subject Course</h4>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 24px; font-weight: 500;">Enter course parameters to create active student rosters.</p>
+            
+            <div class="form-group">
+                <label>Subject Name</label>
+                <input type="text" id="new-sub-name" class="form-control" placeholder="E.g. Computer Science">
+            </div>
+            
+            <div class="form-group">
+                <label>Subject Code</label>
+                <input type="text" id="new-sub-code" class="form-control" placeholder="E.g. CS-301">
+            </div>
+
+            <div class="form-group">
+                <label>Section / Batch</label>
+                <input type="text" id="new-sub-section" class="form-control" placeholder="E.g. A-3 or Batch-2026">
+            </div>
+
+            <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                <button onclick="closeAddSubjectModal()" class="btn-pill" style="background: rgba(91,91,214,0.06); color: var(--text-muted); border: 1px solid rgba(91,91,214,0.15);">Cancel</button>
+                <button onclick="addSubjectSubmit()" class="btn-pill">Create Subject</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Share Subject / QR Code -->
+    <div id="share-subject-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; background: rgba(11,15,25,0.4); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center;">
+        <div class="glass-card" style="width: 100%; max-width: 440px; padding: 32px; background: rgba(255,255,255,0.9); border-color: rgba(91,91,214,0.15); box-shadow: var(--shadow-premium); text-align: center;">
+            <h4 id="share-modal-title" style="color: var(--text-dark); font-size: 1.25rem; font-weight: 700; margin-bottom: 8px;">Enrollment Portal</h4>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 24px; font-weight: 500;">Share this ID or dynamic QR code with students to join your subject.</p>
+            
+            <div style="background: #ffffff; padding: 24px; border-radius: 20px; display: inline-block; margin-bottom: 20px; box-shadow: 0 10px 35px rgba(91, 91, 214, 0.15); border: 1px solid rgba(91, 91, 214, 0.1);">
+                <div id="enrollment-qrcode-placeholder"></div>
+            </div>
+
+            <div class="form-group" style="text-align: left;">
+                <label>Subject Registry Enrollment ID</label>
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="share-subject-id" class="form-control" style="background: rgba(91, 91, 214, 0.03); text-align: center;" readonly>
+                    <button onclick="copySubjectId()" class="btn-pill" style="padding: 10px; border: none; aspect-ratio: 1/1; justify-content: center;"><i class="fa-solid fa-copy"></i></button>
+                </div>
+            </div>
+
+            <button onclick="closeShareSubjectModal()" class="btn-pill" style="width: 100%; justify-content: center; background: rgba(91,91,214,0.06); color: var(--text-muted); border: 1px solid rgba(91,91,214,0.15); margin-top: 10px;">Close Portal</button>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+    let qrcodeInstance = null;
+
+    function openAddSubjectModal() {
+        document.getElementById('add-subject-modal').style.display = 'flex';
+    }
+    function closeAddSubjectModal() {
+        document.getElementById('add-subject-modal').style.display = 'none';
+    }
+
+    async function addSubjectSubmit() {
+        const name = document.getElementById('new-sub-name').value.trim();
+        const code = document.getElementById('new-sub-code').value.trim();
+        const sec = document.getElementById('new-sub-section').value.trim();
+        
+        if (!name || !code || !sec) return;
+        
+        try {
+            const res = await fetch('/api/create_subject', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: name, code: code, section: sec })
+            });
+            const data = await res.json();
+            if (data.success) {
+                window.location.reload();
+            } else {
+                alert(data.message || 'Creation failed.');
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    function openShareSubjectModal(subjectId, subjectName) {
+        document.getElementById('share-modal-title').textContent = `${subjectName} Portal`;
+        document.getElementById('share-subject-id').value = subjectId;
+        document.getElementById('share-subject-modal').style.display = 'flex';
+
+        const placeholder = document.getElementById('enrollment-qrcode-placeholder');
+        placeholder.innerHTML = '';
+
+        // Generate QR code pointing to enrollment payload
+        qrcodeInstance = new QRCode(placeholder, {
+            text: subjectId,
+            width: 160,
+            height: 160,
+            colorDark : "#5B5BD6",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H
+        });
+    }
+
+    function closeShareSubjectModal() {
+        document.getElementById('share-subject-modal').style.display = 'none';
+    }
+
+    function copySubjectId() {
+        const input = document.getElementById('share-subject-id');
+        input.select();
+        input.setSelectionRange(0, 99999);
+        navigator.clipboard.writeText(input.value);
+        
+        // Custom temporary visual feedback
+        const btn = document.querySelector('[onclick="copySubjectId()"]');
+        const oldHtml = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+        setTimeout(() => { btn.innerHTML = oldHtml; }, 1500);
+    }
+</script>
+{% endblock %}

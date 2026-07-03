@@ -1,0 +1,215 @@
+{% extends "base.html" %}
+
+{% block title %}Live Face Scanner | SnapClass{% endblock %}
+
+{% block content %}
+<div>
+    <div class="content-header" style="display: flex; align-items: center; gap: 20px;">
+        <img src="{{ url_for('static', filename='img/icon_face_recog.png') }}" alt="Face Scanner" style="height: 80px; width: auto; filter: drop-shadow(0 8px 20px rgba(91,91,214,0.2)); flex-shrink: 0;">
+        <div class="content-title">
+            <h2>Live Face Scanner</h2>
+            <p>Scan your class room using next-gen facial embedding models.</p>
+        </div>
+    </div>
+
+    <!-- Scanner grid -->
+    <div class="recognition-console">
+        
+        <!-- Left Side: Camera and controls -->
+        <div class="glass-card" style="padding: 24px; border-radius: 20px; background: rgba(255, 255, 255, 0.85); box-shadow: var(--shadow-soft);">
+            
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label>Select Active Subject Course</label>
+                <div style="position: relative;">
+                    <select id="scan-subject-id" class="form-control" style="border-radius: 16px; background: #ffffff; appearance: none; padding-right: 40px; font-weight: 600; color: var(--text-dark);">
+                        {% for sub in subjects %}
+                        <option value="{{ sub.subject_id }}">{{ sub.subject_name }} ({{ sub.subject_code }})</option>
+                        {% endfor %}
+                    </select>
+                    <i class="fa-solid fa-chevron-down" style="position: absolute; right: 18px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none;"></i>
+                </div>
+            </div>
+
+            <!-- Simulated/Real Camera Viewport -->
+            <div class="camera-viewport mb-4" style="border: 2px solid var(--border-color); background: #111124; aspect-ratio: 16 / 9; border-radius: 18px; position: relative; overflow: hidden; box-shadow: var(--shadow-soft);">
+                <video id="scan-webcam" autoplay playsinline class="camera-feed" style="width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1);"></video>
+                
+                <div class="scanner-overlay">
+                    <div class="scan-line" style="animation-duration: 3s;"></div>
+                    <div class="corner-bracket corner-tl" style="border-color: var(--primary);"></div>
+                    <div class="corner-bracket corner-tr" style="border-color: var(--primary);"></div>
+                    <div class="corner-bracket corner-bl" style="border-color: var(--primary);"></div>
+                    <div class="corner-bracket corner-br" style="border-color: var(--primary);"></div>
+                </div>
+                
+                <div id="scan-camera-loading" style="position: absolute; top:0; left:0; width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center; background:#111124; color:#94a3b8; gap:12px; z-index: 2;">
+                    <i class="fa-solid fa-spinner fa-spin" style="font-size: 2.2rem; color: var(--primary);"></i>
+                    <p style="font-weight: 600; font-size: 0.95rem;">Booting scanner camera feed...</p>
+                </div>
+            </div>
+
+            <!-- Capture controls -->
+            <div style="display: flex; gap: 16px;">
+                <button onclick="triggerScanSnapshot()" class="btn-pill" style="flex: 1; justify-content: center; padding: 14px;">
+                    <i class="fa-solid fa-camera"></i> Scan Classroom Photo
+                </button>
+                <button onclick="commitAttendanceLog()" id="btn-commit" class="btn-pill-pink" style="flex: 1; justify-content: center; padding: 14px;" disabled>
+                    <i class="fa-solid fa-circle-check"></i> Commit Attendance
+                </button>
+            </div>
+        </div>
+
+        <!-- Right Side: Live Logs console -->
+        <div class="glass-card log-stream-card" style="padding: 24px; border-radius: 20px; background: rgba(255, 255, 255, 0.85); box-shadow: var(--shadow-soft);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+                <h4 style="color: var(--text-dark); font-weight: 700;"><i class="fa-solid fa-users" style="color: var(--primary); margin-right: 8px;"></i> Recognized Students</h4>
+                <span id="detected-counter" style="background: rgba(91,91,214,0.08); color: var(--primary); padding: 4px 10px; border-radius: 8px; font-weight: 700; font-size: 0.8rem;">0 Present</span>
+            </div>
+
+            <div id="no-students-msg" style="text-align: center; color: var(--text-muted); font-weight: 600; padding: 60px 0; display: block;">
+                <i class="fa-solid fa-face-viewfinder" style="font-size: 3rem; color: rgba(91,91,214,0.1); margin-bottom: 16px;"></i>
+                <p>No faces scanned yet. Select a course and capture a frame to analyze.</p>
+            </div>
+
+            <div id="detected-list" class="log-stream-list" style="display: none; max-height: 320px; overflow-y: auto;">
+                <!-- Dynamically populated roster -->
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    let scanStream = null;
+    let presentStudentIds = [];
+
+    async function startScanWebcam() {
+        const video = document.getElementById('scan-webcam');
+        const loading = document.getElementById('scan-camera-loading');
+        try {
+            scanStream = await navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720 } });
+            video.srcObject = scanStream;
+            loading.style.display = 'none';
+        } catch (err) {
+            console.error("Camera access failed", err);
+            loading.innerHTML = `
+                <i class="fa-solid fa-triangle-exclamation" style="font-size: 2rem; color: var(--danger);"></i>
+                <p style="margin-top:8px; font-weight:600; color:var(--text-dark);">Camera access was denied or not available.</p>
+            `;
+        }
+    }
+
+    async function triggerScanSnapshot() {
+        const video = document.getElementById('scan-webcam');
+        const listDiv = document.getElementById('detected-list');
+        const emptyMsg = document.getElementById('no-students-msg');
+        const counter = document.getElementById('detected-counter');
+        const btnCommit = document.getElementById('btn-commit');
+
+        if (!scanStream) return;
+
+        // Capture frame
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth || 1280;
+        canvas.height = video.videoHeight || 720;
+        const ctx = canvas.getContext('2d');
+        ctx.translate(canvas.width, 0);
+        ctx.scale(-1, 1);
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        const dataUrl = canvas.toDataURL('image/jpeg');
+
+        emptyMsg.innerHTML = `
+            <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 2.2rem; color: var(--primary); margin-bottom: 16px;"></i>
+            <p>Processing neural facial embeddings...</p>
+        `;
+        emptyMsg.style.display = 'block';
+        listDiv.style.display = 'none';
+
+        try {
+            const res = await fetch('/api/detect_faces', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ image: dataUrl })
+            });
+            const data = await res.json();
+
+            if (data.success && data.recognized.length > 0) {
+                emptyMsg.style.display = 'none';
+                listDiv.style.display = 'flex';
+                listDiv.style.flexDirection = 'column';
+                listDiv.innerHTML = '';
+                
+                presentStudentIds = [];
+
+                data.recognized.forEach(student => {
+                    presentStudentIds.push(student.student_id);
+                    
+                    const item = document.createElement('div');
+                    item.className = 'log-stream-item';
+                    item.innerHTML = `
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem;">
+                                ${student.name[0].toUpperCase()}
+                            </div>
+                            <span style="font-weight: 700; color: var(--text-dark);">${student.name}</span>
+                        </div>
+                        <span style="font-size: 0.8rem; font-weight: 700; color: var(--success); background: rgba(74, 222, 128, 0.15); padding: 4px 10px; border-radius: 6px;">
+                            ${student.confidence}% Match
+                        </span>
+                    `;
+                    listDiv.appendChild(item);
+                });
+
+                counter.textContent = `${data.recognized.length} Present`;
+                btnCommit.disabled = false;
+            } else {
+                emptyMsg.innerHTML = `
+                    <i class="fa-solid fa-triangle-exclamation" style="font-size: 3rem; color: var(--danger); margin-bottom: 16px;"></i>
+                    <p>No students recognized in this frame.</p>
+                `;
+                btnCommit.disabled = true;
+            }
+        } catch (e) {
+            console.error(e);
+            emptyMsg.innerHTML = `<p style="color: var(--danger);">Verification failed.</p>`;
+        }
+    }
+
+    async function commitAttendanceLog() {
+        const subId = document.getElementById('scan-subject-id').value;
+        if (!subId || presentStudentIds.length === 0) return;
+
+        try {
+            const res = await fetch('/api/create_attendance', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    subject_id: subId,
+                    student_ids: presentStudentIds
+                })
+            });
+            const data = await res.json();
+            if (data.success) {
+                window.location.href = '/attendance';
+            } else {
+                alert('Commit failed.');
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    window.addEventListener('load', startScanWebcam);
+    window.addEventListener('beforeunload', () => {
+        if (scanStream) {
+            scanStream.getTracks().forEach(t => t.stop());
+        }
+    });
+</script>
+
+<!-- Live Scanner Page Specific 3D Camera Background Shape -->
+<div class="fluent-bg-shapes">
+    <img class="shape-3d" src="{{ url_for('static', filename='img/icon_qr_scanner.png') }}" style="bottom: 8%; right: 6%; width: 130px; animation-delay: 1s;">
+</div>
+{% endblock %}
