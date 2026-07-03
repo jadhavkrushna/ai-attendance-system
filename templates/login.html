@@ -27,57 +27,154 @@
     </div>
 
     <!-- Login Card (Image 2 Style) -->
+    <style>
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            font-weight: 700;
+            border-radius: 12px;
+            border: 2px solid transparent;
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .tab-btn.active {
+            background: rgba(91, 91, 214, 0.08) !important;
+            color: var(--primary) !important;
+            border-color: rgba(91, 91, 214, 0.15) !important;
+        }
+        .scanner-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto 20px auto;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 3px solid rgba(91, 91, 214, 0.2);
+            background: #0b0f19;
+            aspect-ratio: 4/3;
+        }
+        .scanner-feed {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .scanner-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 2px solid var(--primary);
+            border-radius: 20px;
+            pointer-events: none;
+            box-sizing: border-box;
+            animation: pulse-border 2s infinite ease-in-out;
+        }
+        @keyframes pulse-border {
+            0% { opacity: 0.4; }
+            50% { opacity: 1; }
+            100% { opacity: 0.4; }
+        }
+    </style>
+
+    <!-- Login Card (Image 2 Style with Tabs) -->
     <div class="glass-card"
         style="width: 100%; max-width: 520px; padding: 40px; border-radius: 28px; box-shadow: var(--shadow-premium); background: rgba(255, 255, 255, 0.75); margin: 32px 0;">
-        <div style="text-align: center; margin-bottom: 32px;">
-            <h2 style="font-size: 1.95rem; font-weight: 800; color: var(--text-dark); letter-spacing: -0.5px;">Login
-                using password</h2>
-            <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 8px; font-weight: 500;">Welcome back!
-                Please login to continue</p>
+        
+        <!-- Role Tabs -->
+        <div class="login-tabs" style="display: flex; gap: 16px; margin-bottom: 28px; border-bottom: 1px solid var(--border-color); padding-bottom: 16px;">
+            <button type="button" id="tab-teacher" onclick="setRole('teacher')" class="tab-btn active">
+                <i class="fa-solid fa-school"></i> Teacher
+            </button>
+            <button type="button" id="tab-student" onclick="setRole('student')" class="tab-btn">
+                <i class="fa-solid fa-face-viewfinder"></i> Student
+            </button>
         </div>
 
-        <form id="login-form-submit" action="/login" method="POST">
-            <input type="hidden" name="role" value="teacher">
-
-            <div class="form-group">
-                <label for="login-username"
-                    style="font-weight: 600; font-size: 0.9rem; color: var(--text-dark); margin-bottom: 10px;">Enter
-                    username</label>
-                <div class="input-container-icon">
-                    <i class="fa-regular fa-user input-icon"></i>
-                    <input type="text" id="login-username" name="username" class="form-control-icon"
-                        placeholder="ananyaroy" required
-                        style="border-radius: 20px; background: rgba(255, 255, 255, 0.9); border-color: #EAE8FF;">
-                </div>
+        <!-- Teacher Login Section -->
+        <div id="teacher-login-section">
+            <div style="text-align: center; margin-bottom: 32px;">
+                <h2 style="font-size: 1.95rem; font-weight: 800; color: var(--text-dark); letter-spacing: -0.5px;">Teacher Login</h2>
+                <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 8px; font-weight: 500;">Welcome back! Please login using credentials</p>
             </div>
 
-            <div class="form-group" style="margin-bottom: 36px;">
-                <label for="login-password"
-                    style="font-weight: 600; font-size: 0.9rem; color: var(--text-dark); margin-bottom: 10px;">Enter
-                    password</label>
-                <div class="input-container-icon">
-                    <i class="fa-solid fa-lock input-icon"></i>
-                    <input type="password" id="login-password" name="password" class="placeholder-dot form-control-icon"
-                        placeholder="••••••••" required
-                        style="border-radius: 20px; background: rgba(255, 255, 255, 0.9); border-color: #EAE8FF; padding-right: 56px;">
-                    <i class="fa-regular fa-eye" id="login-toggle-pw" onclick="toggleLoginPassword()"
-                        style="position: absolute; right: 20px; color: var(--text-muted); cursor: pointer; font-size: 1.1rem;"></i>
+            <form id="login-form-submit" action="/login" method="POST">
+                <input type="hidden" name="role" value="teacher">
+
+                <div class="form-group">
+                    <label for="login-username"
+                        style="font-weight: 600; font-size: 0.9rem; color: var(--text-dark); margin-bottom: 10px;">Enter username</label>
+                    <div class="input-container-icon">
+                        <i class="fa-regular fa-user input-icon"></i>
+                        <input type="text" id="login-username" name="username" class="form-control-icon"
+                            placeholder="ananyaroy" required
+                            style="border-radius: 20px; background: rgba(255, 255, 255, 0.9); border-color: #EAE8FF;">
+                    </div>
                 </div>
+
+                <div class="form-group" style="margin-bottom: 36px;">
+                    <label for="login-password"
+                        style="font-weight: 600; font-size: 0.9rem; color: var(--text-dark); margin-bottom: 10px;">Enter password</label>
+                    <div class="input-container-icon">
+                        <i class="fa-solid fa-lock input-icon"></i>
+                        <input type="password" id="login-password" name="password" class="placeholder-dot form-control-icon"
+                            placeholder="••••••••" required
+                            style="border-radius: 20px; background: rgba(255, 255, 255, 0.9); border-color: #EAE8FF; padding-right: 56px;">
+                        <i class="fa-regular fa-eye" id="login-toggle-pw" onclick="toggleLoginPassword()"
+                            style="position: absolute; right: 20px; color: var(--text-muted); cursor: pointer; font-size: 1.1rem;"></i>
+                    </div>
+                </div>
+
+                <!-- Action Buttons Grid (Image 2 style) -->
+                <div style="display: flex; gap: 16px; width: 100%;">
+                    <button type="submit" class="btn-pill-pink"
+                        style="flex: 1; justify-content: center; padding: 16px; font-size: 0.95rem; border-radius: 20px;">
+                        <i class="fa-solid fa-right-to-bracket"></i> Login <span
+                            style="font-size: 0.75rem; opacity: 0.8; margin-left: 4px;">Ctrl + Enter</span>
+                    </button>
+                    <a id="register-link-teacher" href="/register?role=teacher" class="btn-pill"
+                        style="flex: 1; justify-content: center; padding: 16px; font-size: 0.95rem; border-radius: 20px; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);">
+                        <i class="fa-solid fa-user-plus"></i> Register Instead
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Student Login Section -->
+        <div id="student-login-section" style="display: none; text-align: center;">
+            <div style="margin-bottom: 24px;">
+                <h2 style="font-size: 1.95rem; font-weight: 800; color: var(--text-dark); letter-spacing: -0.5px;">Student Portal</h2>
+                <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 8px; font-weight: 500;">AI Face ID Biometric Verification</p>
             </div>
 
-            <!-- Action Buttons Grid (Image 2 style) -->
+            <!-- Face Scanner -->
+            <div class="scanner-container">
+                <video id="login-video" class="scanner-feed" autoplay playsinline muted></video>
+                <div class="scanner-overlay"></div>
+            </div>
+
+            <p id="scan-status" style="font-weight: 600; font-size: 0.95rem; margin-bottom: 24px; color: var(--text-muted);">
+                Position your face in the camera frame
+            </p>
+
             <div style="display: flex; gap: 16px; width: 100%;">
-                <button type="submit" class="btn-pill-pink"
-                    style="flex: 1; justify-content: center; padding: 16px; font-size: 0.95rem; border-radius: 20px;">
-                    <i class="fa-solid fa-right-to-bracket"></i> Login <span
-                        style="font-size: 0.75rem; opacity: 0.8; margin-left: 4px;">Ctrl + Enter</span>
+                <button type="button" onclick="captureAndLogin()" class="btn-pill-pink"
+                    style="flex: 1; justify-content: center; padding: 16px; font-size: 0.95rem; border-radius: 20px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-face-viewfinder"></i> Verify & Login
                 </button>
-                <a href="/register" class="btn-pill"
+                <a id="register-link-student" href="/register?role=student" class="btn-pill"
                     style="flex: 1; justify-content: center; padding: 16px; font-size: 0.95rem; border-radius: 20px; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);">
-                    <i class="fa-solid fa-user-plus"></i> Register Instead
+                    <i class="fa-solid fa-user-plus"></i> Register Profile
                 </a>
             </div>
-        </form>
+        </div>
     </div>
 
     <!-- Floating 3D Icons matching image 4 EXACTLY -->
@@ -111,6 +208,8 @@
 </div>
 
 <script>
+    let cameraStream = null;
+
     function toggleLoginPassword() {
         const pwInput = document.getElementById('login-password');
         const icon = document.getElementById('login-toggle-pw');
@@ -122,5 +221,94 @@
             icon.classList.replace('fa-eye-slash', 'fa-eye');
         }
     }
+
+    async function startCamera() {
+        const video = document.getElementById('login-video');
+        try {
+            cameraStream = await navigator.mediaDevices.getUserMedia({ 
+                video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: "user" } 
+            });
+            video.srcObject = cameraStream;
+            video.play();
+        } catch (err) {
+            console.error("Camera access failed:", err);
+            document.getElementById('scan-status').innerText = "Unable to access camera. Please allow permission.";
+            document.getElementById('scan-status').style.color = "var(--danger)";
+        }
+    }
+
+    function stopCamera() {
+        if (cameraStream) {
+            cameraStream.getTracks().forEach(track => track.stop());
+            cameraStream = null;
+        }
+    }
+
+    function setRole(role) {
+        if (role === 'teacher') {
+            document.getElementById('tab-teacher').classList.add('active');
+            document.getElementById('tab-student').classList.remove('active');
+            document.getElementById('teacher-login-section').style.display = 'block';
+            document.getElementById('student-login-section').style.display = 'none';
+            stopCamera();
+        } else {
+            document.getElementById('tab-student').classList.add('active');
+            document.getElementById('tab-teacher').classList.remove('active');
+            document.getElementById('student-login-section').style.display = 'block';
+            document.getElementById('teacher-login-section').style.display = 'none';
+            startCamera();
+        }
+    }
+
+    async function captureAndLogin() {
+        const video = document.getElementById('login-video');
+        const statusText = document.getElementById('scan-status');
+        
+        if (!cameraStream || video.paused || video.ended) {
+            statusText.innerText = "Camera not ready.";
+            return;
+        }
+        
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth || 640;
+        canvas.height = video.videoHeight || 480;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const dataUrl = canvas.toDataURL('image/jpeg');
+        
+        statusText.innerText = "Verifying face ID matches...";
+        statusText.style.color = "var(--primary)";
+        
+        try {
+            const response = await fetch('/api/login_face', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ image: dataUrl })
+            });
+            const result = await response.json();
+            if (result.success) {
+                statusText.innerText = `Verified! Welcome, ${result.name}. Redirecting...`;
+                statusText.style.color = "var(--success)";
+                stopCamera();
+                setTimeout(() => {
+                    window.location.href = "/dashboard";
+                }, 1200);
+            } else {
+                statusText.innerText = result.message || "No matching profile found.";
+                statusText.style.color = "var(--danger)";
+            }
+        } catch (err) {
+            console.error(err);
+            statusText.innerText = "Biometric server communication failed.";
+            statusText.style.color = "var(--danger)";
+        }
+    }
+
+    // Auto-detect role from URL query parameter on load
+    window.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const role = urlParams.get('role') || 'teacher';
+        setRole(role);
+    });
 </script>
 {% endblock %}

@@ -27,79 +27,189 @@
     </div>
 
     <!-- Registration Card (Image 4 Style) -->
+    <style>
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            font-weight: 700;
+            border-radius: 12px;
+            border: 2px solid transparent;
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .tab-btn.active {
+            background: rgba(91, 91, 214, 0.08) !important;
+            color: var(--primary) !important;
+            border-color: rgba(91, 91, 214, 0.15) !important;
+        }
+        .scanner-container {
+            position: relative;
+            width: 100%;
+            max-width: 360px;
+            margin: 0 auto 16px auto;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 3px solid rgba(91, 91, 214, 0.2);
+            background: #0b0f19;
+            aspect-ratio: 4/3;
+        }
+        .scanner-feed {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .captured-preview {
+            border: 3px solid var(--success) !important;
+        }
+    </style>
+
+    <!-- Registration Card (Image 4 Style with Tabs) -->
     <div class="glass-card"
-        style="width: 100%; max-width: 540px; padding: 40px; border-radius: 28px; box-shadow: var(--shadow-premium); background: rgba(255, 255, 255, 0.75); margin: 32px 0;">
-        <div style="text-align: center; margin-bottom: 28px;">
-            <h2 style="font-size: 1.95rem; font-weight: 800; color: var(--text-dark); letter-spacing: -0.5px;">Register
-                your teacher profile</h2>
-            <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 8px; font-weight: 500;">Create your
-                account to get started with Fluentia</p>
+        style="width: 100%; max-width: 560px; padding: 40px; border-radius: 28px; box-shadow: var(--shadow-premium); background: rgba(255, 255, 255, 0.75); margin: 32px 0;">
+        
+        <!-- Role Tabs -->
+        <div class="login-tabs" style="display: flex; gap: 16px; margin-bottom: 28px; border-bottom: 1px solid var(--border-color); padding-bottom: 16px;">
+            <button type="button" id="tab-teacher" onclick="setRole('teacher')" class="tab-btn active">
+                <i class="fa-solid fa-school"></i> Teacher
+            </button>
+            <button type="button" id="tab-student" onclick="setRole('student')" class="tab-btn">
+                <i class="fa-solid fa-face-viewfinder"></i> Student
+            </button>
         </div>
 
-        <form id="reg-form-submit" action="/register" method="POST">
-            <input type="hidden" name="role" value="teacher">
+        <!-- Teacher Registration Section -->
+        <div id="teacher-reg-section">
+            <div style="text-align: center; margin-bottom: 28px;">
+                <h2 style="font-size: 1.95rem; font-weight: 800; color: var(--text-dark); letter-spacing: -0.5px;">Teacher Registration</h2>
+                <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 8px; font-weight: 500;">Create your account to get started with Fluentia</p>
+            </div>
+
+            <form id="reg-form-submit" action="/register" method="POST">
+                <input type="hidden" name="role" value="teacher">
+
+                <div class="form-group">
+                    <label for="reg-username"
+                        style="font-weight: 600; font-size: 0.9rem; color: var(--text-dark); margin-bottom: 8px;">Enter username</label>
+                    <div class="input-container-icon">
+                        <i class="fa-regular fa-user input-icon"></i>
+                        <input type="text" id="reg-username" name="username" class="form-control-icon"
+                            placeholder="ananyaroy" required
+                            style="border-radius: 20px; background: rgba(255, 255, 255, 0.9); border-color: #EAE8FF;">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="reg-name"
+                        style="font-weight: 600; font-size: 0.9rem; color: var(--text-dark); margin-bottom: 8px;">Enter name</label>
+                    <div class="input-container-icon">
+                        <i class="fa-regular fa-user input-icon"></i>
+                        <input type="text" id="reg-name" name="name" class="form-control-icon" placeholder="Ananya Roy"
+                            required
+                            style="border-radius: 20px; background: rgba(255, 255, 255, 0.9); border-color: #EAE8FF;">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="reg-password"
+                        style="font-weight: 600; font-size: 0.9rem; color: var(--text-dark); margin-bottom: 8px;">Enter password</label>
+                    <div class="input-container-icon">
+                        <i class="fa-solid fa-lock input-icon"></i>
+                        <input type="password" id="reg-password" name="password" class="form-control-icon"
+                            placeholder="••••••••" required
+                            style="border-radius: 20px; background: rgba(255, 255, 255, 0.9); border-color: #EAE8FF;">
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 32px;">
+                    <label for="reg-confirm-password"
+                        style="font-weight: 600; font-size: 0.9rem; color: var(--text-dark); margin-bottom: 8px;">Confirm your password</label>
+                    <div class="input-container-icon">
+                        <i class="fa-solid fa-lock input-icon"></i>
+                        <input type="password" id="reg-confirm-password" name="confirm_password" class="form-control-icon"
+                            placeholder="••••••••" required
+                            style="border-radius: 20px; background: rgba(255, 255, 255, 0.9); border-color: #EAE8FF;">
+                    </div>
+                </div>
+
+                <!-- Action Buttons Grid (Image 4 style) -->
+                <div style="display: flex; gap: 16px; width: 100%;">
+                    <button type="submit" class="btn-pill-pink"
+                        style="flex: 1; justify-content: center; padding: 16px; font-size: 0.95rem; border-radius: 20px;">
+                        <i class="fa-solid fa-user-plus"></i> Register now <span
+                            style="font-size: 0.75rem; opacity: 0.8; margin-left: 4px;">Ctrl + Enter</span>
+                    </button>
+                    <a id="login-link-teacher" href="/login?role=teacher" class="btn-pill"
+                        style="flex: 1; justify-content: center; padding: 16px; font-size: 0.95rem; border-radius: 20px; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);">
+                        <i class="fa-solid fa-right-to-bracket"></i> Login Instead
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Student Registration Section -->
+        <div id="student-reg-section" style="display: none;">
+            <div style="text-align: center; margin-bottom: 24px;">
+                <h2 style="font-size: 1.95rem; font-weight: 800; color: var(--text-dark); letter-spacing: -0.5px;">Student Enrolment</h2>
+                <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 8px; font-weight: 500;">Register Face ID & Voice Biometrics</p>
+            </div>
 
             <div class="form-group">
-                <label for="reg-username"
-                    style="font-weight: 600; font-size: 0.9rem; color: var(--text-dark); margin-bottom: 8px;">Enter
-                    username</label>
+                <label for="student-name" style="font-weight: 600; font-size: 0.9rem; color: var(--text-dark); margin-bottom: 8px;">Student Full Name</label>
                 <div class="input-container-icon">
                     <i class="fa-regular fa-user input-icon"></i>
-                    <input type="text" id="reg-username" name="username" class="form-control-icon"
-                        placeholder="ananyaroy" required
+                    <input type="text" id="student-name" class="form-control-icon" placeholder="Alexander Vance"
                         style="border-radius: 20px; background: rgba(255, 255, 255, 0.9); border-color: #EAE8FF;">
                 </div>
             </div>
 
-            <div class="form-group">
-                <label for="reg-name"
-                    style="font-weight: 600; font-size: 0.9rem; color: var(--text-dark); margin-bottom: 8px;">Enter
-                    name</label>
-                <div class="input-container-icon">
-                    <i class="fa-regular fa-user input-icon"></i>
-                    <input type="text" id="reg-name" name="name" class="form-control-icon" placeholder="Ananya Roy"
-                        required
-                        style="border-radius: 20px; background: rgba(255, 255, 255, 0.9); border-color: #EAE8FF;">
-                </div>
+            <!-- Face Capture -->
+            <label style="font-weight: 600; font-size: 0.9rem; color: var(--text-dark); display: block; margin-bottom: 8px;">Face Photo (Face ID Enrollment)</label>
+            <div id="video-container" class="scanner-container">
+                <video id="capture-video" class="scanner-feed" autoplay playsinline muted></video>
+                <canvas id="photo-preview" class="scanner-feed" style="display: none;"></canvas>
             </div>
 
-            <div class="form-group">
-                <label for="reg-password"
-                    style="font-weight: 600; font-size: 0.9rem; color: var(--text-dark); margin-bottom: 8px;">Enter
-                    password</label>
-                <div class="input-container-icon">
-                    <i class="fa-solid fa-lock input-icon"></i>
-                    <input type="password" id="reg-password" name="password" class="form-control-icon"
-                        placeholder="••••••••" required
-                        style="border-radius: 20px; background: rgba(255, 255, 255, 0.9); border-color: #EAE8FF;">
-                </div>
-            </div>
-
-            <div class="form-group" style="margin-bottom: 32px;">
-                <label for="reg-confirm-password"
-                    style="font-weight: 600; font-size: 0.9rem; color: var(--text-dark); margin-bottom: 8px;">Confirm
-                    your password</label>
-                <div class="input-container-icon">
-                    <i class="fa-solid fa-lock input-icon"></i>
-                    <input type="password" id="reg-confirm-password" name="confirm_password" class="form-control-icon"
-                        placeholder="••••••••" required
-                        style="border-radius: 20px; background: rgba(255, 255, 255, 0.9); border-color: #EAE8FF;">
-                </div>
-            </div>
-
-            <!-- Action Buttons Grid (Image 4 style) -->
-            <div style="display: flex; gap: 16px; width: 100%;">
-                <button type="submit" class="btn-pill-pink"
-                    style="flex: 1; justify-content: center; padding: 16px; font-size: 0.95rem; border-radius: 20px;">
-                    <i class="fa-solid fa-user-plus"></i> Register now <span
-                        style="font-size: 0.75rem; opacity: 0.8; margin-left: 4px;">Ctrl + Enter</span>
+            <div style="display: flex; gap: 12px; justify-content: center; margin-bottom: 24px;">
+                <button type="button" id="btn-snap" onclick="takeSnapshot()" class="btn-pill" style="padding: 10px 20px; font-size: 0.85rem;">
+                    <i class="fa-solid fa-camera"></i> Capture Face
                 </button>
-                <a href="/login" class="btn-pill"
+                <button type="button" id="btn-retake" onclick="retakeSnapshot()" class="btn-pill" style="display: none; padding: 10px 20px; font-size: 0.85rem; background: rgba(251,113,133,0.1); color: var(--danger); border-color: rgba(251,113,133,0.2);">
+                    <i class="fa-solid fa-arrow-rotate-left"></i> Retake
+                </button>
+            </div>
+
+            <!-- Voice Recording -->
+            <label style="font-weight: 600; font-size: 0.9rem; color: var(--text-dark); display: block; margin-bottom: 8px;">Voice Biometrics (Optional)</label>
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: #ffffff; border: 1px solid var(--border-color); border-radius: 20px; margin-bottom: 32px; box-shadow: var(--shadow-soft);">
+                <div>
+                    <span id="voice-status" style="font-weight: 700; font-size: 0.85rem; color: var(--text-muted);">Voice clip not recorded</span>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <button type="button" id="btn-record" onclick="toggleVoiceRecord()" class="btn-pill" style="padding: 8px 16px; font-size: 0.8rem;">
+                        <i class="fa-solid fa-microphone"></i> Record
+                    </button>
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <div style="display: flex; gap: 16px; width: 100%;">
+                <button type="button" onclick="submitStudentRegistration()" class="btn-pill-pink"
+                    style="flex: 1; justify-content: center; padding: 16px; font-size: 0.95rem; border-radius: 20px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-user-plus"></i> Register Student
+                </button>
+                <a id="login-link-student" href="/login?role=student" class="btn-pill"
                     style="flex: 1; justify-content: center; padding: 16px; font-size: 0.95rem; border-radius: 20px; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);">
                     <i class="fa-solid fa-right-to-bracket"></i> Login Instead
                 </a>
             </div>
-        </form>
+        </div>
     </div>
 
     <!-- Floating 3D Icons matching image 4 EXACTLY -->
@@ -131,4 +241,175 @@
     </div>
 
 </div>
+
+<script>
+    let cameraStream = null;
+    let audioStream = null;
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let audioBlob = null;
+    let isRecording = false;
+    let capturedImageBase64 = null;
+
+    async function startCamera() {
+        const video = document.getElementById('capture-video');
+        try {
+            cameraStream = await navigator.mediaDevices.getUserMedia({ 
+                video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: "user" } 
+            });
+            video.srcObject = cameraStream;
+            video.play();
+        } catch (err) {
+            console.error("Camera access failed:", err);
+            alert("Unable to access camera. Please allow permission for face photo registration.");
+        }
+    }
+
+    function stopCamera() {
+        if (cameraStream) {
+            cameraStream.getTracks().forEach(track => track.stop());
+            cameraStream = null;
+        }
+    }
+
+    function setRole(role) {
+        if (role === 'teacher') {
+            document.getElementById('tab-teacher').classList.add('active');
+            document.getElementById('tab-student').classList.remove('active');
+            document.getElementById('teacher-reg-section').style.display = 'block';
+            document.getElementById('student-reg-section').style.display = 'none';
+            stopCamera();
+        } else {
+            document.getElementById('tab-student').classList.add('active');
+            document.getElementById('tab-teacher').classList.remove('active');
+            document.getElementById('student-reg-section').style.display = 'block';
+            document.getElementById('teacher-reg-section').style.display = 'none';
+            startCamera();
+        }
+    }
+
+    function takeSnapshot() {
+        const video = document.getElementById('capture-video');
+        const canvas = document.getElementById('photo-preview');
+        
+        if (!cameraStream || video.paused || video.ended) return;
+        
+        canvas.width = video.videoWidth || 640;
+        canvas.height = video.videoHeight || 480;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        capturedImageBase64 = canvas.toDataURL('image/jpeg');
+        
+        // Toggle view
+        video.style.display = 'none';
+        canvas.style.display = 'block';
+        document.getElementById('video-container').classList.add('captured-preview');
+        document.getElementById('btn-snap').style.display = 'none';
+        document.getElementById('btn-retake').style.display = 'inline-flex';
+    }
+
+    function retakeSnapshot() {
+        const video = document.getElementById('capture-video');
+        const canvas = document.getElementById('photo-preview');
+        
+        capturedImageBase64 = null;
+        
+        // Toggle view
+        canvas.style.display = 'none';
+        video.style.display = 'block';
+        document.getElementById('video-container').classList.remove('captured-preview');
+        document.getElementById('btn-snap').style.display = 'inline-flex';
+        document.getElementById('btn-retake').style.display = 'none';
+    }
+
+    async function toggleVoiceRecord() {
+        const statusText = document.getElementById('voice-status');
+        const recordBtn = document.getElementById('btn-record');
+        
+        if (!isRecording) {
+            // Start recording
+            try {
+                audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(audioStream);
+                audioChunks = [];
+                
+                mediaRecorder.ondataavailable = e => {
+                    audioChunks.push(e.data);
+                };
+                
+                mediaRecorder.onstop = () => {
+                    audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    statusText.innerText = "Voice registered! (Ready)";
+                    statusText.style.color = "var(--success)";
+                    
+                    // Stop mic tracks
+                    audioStream.getTracks().forEach(track => track.stop());
+                };
+                
+                mediaRecorder.start();
+                isRecording = true;
+                recordBtn.innerHTML = '<i class="fa-solid fa-square-poll-vertical"></i> Stop';
+                statusText.innerText = "Recording voice... Speak name.";
+                statusText.style.color = "var(--danger)";
+            } catch (err) {
+                console.error("Mic access failed:", err);
+                alert("Unable to access microphone for voice biometric training.");
+            }
+        } else {
+            // Stop recording
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+            }
+            isRecording = false;
+            recordBtn.innerHTML = '<i class="fa-solid fa-microphone"></i> Record';
+        }
+    }
+
+    async function submitStudentRegistration() {
+        const name = document.getElementById('student-name').value.trim();
+        
+        if (!name) {
+            alert("Please enter the student's name.");
+            return;
+        }
+        
+        if (!capturedImageBase64) {
+            alert("Please capture a face photo for biometric verification.");
+            return;
+        }
+        
+        const formData = new FormData();
+        formData.append("name", name);
+        formData.append("face_image", capturedImageBase64);
+        if (audioBlob) {
+            formData.append("voice_clip", audioBlob, "voice.wav");
+        }
+        
+        try {
+            const response = await fetch('/api/register_student', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+            if (result.success) {
+                alert("Student profile registered successfully! Logging in...");
+                stopCamera();
+                window.location.href = "/dashboard";
+            } else {
+                alert(result.message || "Registration failed.");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Server connection error during student enrolment.");
+        }
+    }
+
+    // Auto-detect role from URL query parameter on load
+    window.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const role = urlParams.get('role') || 'teacher';
+        setRole(role);
+    });
+</script>
 {% endblock %}
