@@ -6,6 +6,10 @@ __pycache__/
 .env
 .env.*
 !.env.example
+.secret
+secret
+secret.*
+*.secret
 .vscode
 
 venv/
