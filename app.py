@@ -3,7 +3,10 @@ import base64
 import io
 import csv
 import threading
-import streamlit as st
+try:
+    import streamlit as st
+except ImportError:
+    st = None
 from datetime import datetime
 from PIL import Image
 import numpy as np
