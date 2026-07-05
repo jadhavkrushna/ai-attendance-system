@@ -27,6 +27,7 @@ COPY requirements.txt .
 
 # Limit compiler to a single thread to prevent Out-Of-Memory (OOM) failures on free hosting tiers (Render/Heroku)
 ENV MAKEFLAGS="-j1"
+ENV CMAKE_BUILD_PARALLEL_LEVEL=1
 
 # Install dependencies (this compiles dlib which will take a few minutes)
 RUN pip install --no-cache-dir --upgrade pip && \
