@@ -1,14 +1,10 @@
-# Use a stable, official Python base image
-FROM python:3.11-slim
+# ─────────────────────────────────────────────────────────────────────────────
+# Stage 1: Builder — compiles C++ extensions (dlib, webrtcvad) then discards
+#          all build tools so the final image stays small.
+# ─────────────────────────────────────────────────────────────────────────────
+FROM python:3.11-slim AS builder
 
-# Prevent Python from writing .pyc files and enable unbuffered logging
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-
-# Install system dependencies required for:
-# 1. Compiling dlib (cmake, build-essential, libx11-dev, libatlas-base-dev)
-# 2. Audio file decoding/processing (libsndfile1)
-# 3. Graphics/image loading (libgl1-mesa-glx, libglib2.0-0)
+# Install only the tools needed to compile dlib & webrtcvad
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     cmake \
@@ -16,39 +12,52 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     make \
     libopenblas-dev \
     libsndfile1 \
-    libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
-# Set working directory
-WORKDIR /app
+WORKDIR /install
 
-# Copy dependency definition file
-COPY requirements.txt .
+COPY requirements.prod.txt .
 
-# Limit compiler to a single thread to prevent Out-Of-Memory (OOM) failures on free hosting tiers (Render/Heroku)
+# Limit C++ compilation to 1 thread to stay within free-tier RAM limits
 ENV MAKEFLAGS="-j1"
 ENV CMAKE_BUILD_PARALLEL_LEVEL=1
 
-# Pre-install CPU-only PyTorch BEFORE requirements.txt so pip resolver picks it up
-# instead of the full CUDA build (which is 2GB+ of NVIDIA libraries useless on a server)
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir \
-        torch==2.5.1+cpu \
-        --index-url https://download.pytorch.org/whl/cpu
+# 1. Install CPU-only PyTorch FIRST so pip resolver never touches CUDA packages
+RUN pip install --no-cache-dir \
+    torch==2.5.1+cpu \
+    --index-url https://download.pytorch.org/whl/cpu
 
-# Install remaining dependencies (this compiles dlib which will take several minutes)
-RUN pip install --no-cache-dir -r requirements.txt && \
-    pip install --no-cache-dir gunicorn
+# 2. Install all remaining production dependencies (compiles dlib here)
+RUN pip install --no-cache-dir gunicorn -r requirements.prod.txt
 
-# Copy application code and templates
-COPY . .
+# ─────────────────────────────────────────────────────────────────────────────
+# Stage 2: Runtime — copy only installed packages, drop all build tools
+# ─────────────────────────────────────────────────────────────────────────────
+FROM python:3.11-slim AS runtime
 
-# Expose Flask web service port
-EXPOSE 5000
+# Runtime-only system libraries (no cmake/g++ needed here)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libopenblas0 \
+    libsndfile1 \
+    libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
 
-# Set production environment variables
+# Copy installed Python packages from the builder stage
+COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
+
+# Prevent Python from writing .pyc files and enable unbuffered logging
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 ENV FLASK_APP=app.py
 ENV PORT=5000
 
-# Start Flask with Gunicorn WSGI server
+WORKDIR /app
+
+# Copy application source code
+COPY . .
+
+EXPOSE 5000
+
+# Run with Gunicorn — 2 workers, 120s timeout for heavy ML inference requests
 CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "2", "--timeout", "120", "app:app"]

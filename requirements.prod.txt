@@ -1,0 +1,33 @@
+# Production requirements for Docker/Linux deployment
+# Streamlit is intentionally excluded — the app runs as a pure Flask app
+# via gunicorn in production. Streamlit is only used locally as a launcher.
+
+# ── Core utilities ────────────────────────────────────────────────
+numpy
+pandas
+scikit-learn
+
+# ── Face recognition ──────────────────────────────────────────────
+# dlib is compiled from source on Linux.
+# face-recognition-models ships the pre-trained model files.
+face-recognition-models==0.3.0
+face-recognition==1.3.0
+setuptools<70.0.0
+
+# ── Database & Auth ───────────────────────────────────────────────
+supabase==2.10.0
+bcrypt
+
+# ── Image / QR processing ─────────────────────────────────────────
+segno
+pillow
+
+# ── Flask web server ──────────────────────────────────────────────
+flask
+
+# ── Voice recognition ─────────────────────────────────────────────
+# torch is pinned to CPU-only BEFORE resemblyzer to prevent pip
+# from resolving it to the full CUDA build (~2.5GB of GPU packages).
+# Install torch first via: pip install torch --index-url https://download.pytorch.org/whl/cpu
+librosa
+resemblyzer
