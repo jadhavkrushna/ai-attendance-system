@@ -59,5 +59,5 @@ COPY . .
 
 EXPOSE 5000
 
-# Run with Gunicorn — 2 workers, 120s timeout for heavy ML inference requests
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "2", "--timeout", "120", "app:app"]
+# Start Flask with Gunicorn WSGI server, binding dynamically to the PORT env variable
+CMD ["sh", "-c", "gunicorn --bind 0.0.0.0:$PORT --workers 2 --timeout 120 app:app"]
