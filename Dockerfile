@@ -29,9 +29,15 @@ COPY requirements.txt .
 ENV MAKEFLAGS="-j1"
 ENV CMAKE_BUILD_PARALLEL_LEVEL=1
 
-# Install dependencies (this compiles dlib which will take a few minutes)
+# Pre-install CPU-only PyTorch BEFORE requirements.txt so pip resolver picks it up
+# instead of the full CUDA build (which is 2GB+ of NVIDIA libraries useless on a server)
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt && \
+    pip install --no-cache-dir \
+        torch==2.5.1+cpu \
+        --index-url https://download.pytorch.org/whl/cpu
+
+# Install remaining dependencies (this compiles dlib which will take several minutes)
+RUN pip install --no-cache-dir -r requirements.txt && \
     pip install --no-cache-dir gunicorn
 
 # Copy application code and templates

@@ -25,4 +25,6 @@ streamlit
 
 #voice recognition
 librosa
+# Pin torch to CPU-only to avoid downloading 2GB+ of NVIDIA CUDA libraries on server
+torch==2.5.1+cpu; platform_system != "Windows"
 resemblyzer
