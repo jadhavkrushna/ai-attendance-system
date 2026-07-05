@@ -6,8 +6,8 @@ services:
     numInstances: 1
     envVars:
       - key: SUPABASE_URL
-        placeholder: "Enter your Supabase Project URL (e.g. https://xxxx.supabase.co)"
+        sync: false
       - key: SUPABASE_KEY
-        placeholder: "Enter your Supabase Anon or Service Key"
+        sync: false
       - key: PORT
         value: "5000"
