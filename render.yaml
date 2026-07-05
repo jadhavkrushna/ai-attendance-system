@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: fluentia-attendance-system
+    env: docker
+    plan: free
+    numInstances: 1
+    envVars:
+      - key: SUPABASE_URL
+        placeholder: "Enter your Supabase Project URL (e.g. https://xxxx.supabase.co)"
+      - key: SUPABASE_KEY
+        placeholder: "Enter your Supabase Anon or Service Key"
+      - key: PORT
+        value: "5000"
