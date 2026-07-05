@@ -27,6 +27,9 @@ WORKDIR /app
 # Copy dependency definition file
 COPY requirements.txt .
 
+# Limit compiler to a single thread to prevent Out-Of-Memory (OOM) failures on free hosting tiers (Render/Heroku)
+ENV MAKEFLAGS="-j1"
+
 # Install dependencies (this compiles dlib which will take a few minutes)
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt && \
