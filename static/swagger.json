@@ -1,0 +1,544 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Fluentia API Portal",
+    "description": "API interactive specification and playground for the AI Attendance System backend. Endpoints requiring authorization depend on session-based cookies. You can log in via teacher credentials or student biometrics before calling secured endpoints.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Fluentia Support"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000",
+      "description": "Local Development Server"
+    }
+  ],
+  "paths": {
+    "/login": {
+      "post": {
+        "summary": "Teacher Login (Form)",
+        "description": "Logs in a teacher using their username and password, starting a cookie session.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "description": "Teacher's registered username"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "description": "Teacher's password"
+                  },
+                  "role": {
+                    "type": "string",
+                    "enum": ["teacher"],
+                    "default": "teacher",
+                    "description": "Role of the user logging in"
+                  }
+                },
+                "required": ["username", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "302": {
+            "description": "Redirects to /dashboard on success, or stays on /login on failure"
+          }
+        }
+      }
+    },
+    "/register": {
+      "post": {
+        "summary": "Teacher Registration (Form)",
+        "description": "Registers a new teacher account.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "description": "Desired username (at least 3 characters)"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "description": "Desired password (at least 6 characters)"
+                  },
+                  "confirm_password": {
+                    "type": "string",
+                    "format": "password",
+                    "description": "Confirm password must match the password"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Full name of the teacher"
+                  },
+                  "role": {
+                    "type": "string",
+                    "enum": ["teacher"],
+                    "default": "teacher"
+                  }
+                },
+                "required": ["username", "password", "confirm_password", "name"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "302": {
+            "description": "Redirects to /login on success"
+          }
+        }
+      }
+    },
+    "/logout": {
+      "get": {
+        "summary": "Logout session",
+        "description": "Clears the active session and logs the user out.",
+        "responses": {
+          "302": {
+            "description": "Redirects to index page"
+          }
+        }
+      }
+    },
+    "/api/login_face": {
+      "post": {
+        "summary": "Student Face Login",
+        "description": "Authenticates a student using face recognition biometrics. Sets student session on success.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "image": {
+                    "type": "string",
+                    "description": "Base64-encoded image string of student's face (with or without data:image prefix)"
+                  }
+                },
+                "required": ["image"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Face recognition output status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "name": { "type": "string", "description": "Student name if successful" },
+                    "message": { "type": "string", "description": "Error message if failure" }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing image data"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/register_student": {
+      "post": {
+        "summary": "Register Student Profile",
+        "description": "Enrolls a new student with biometric face and voice profiles.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Student full name"
+                  },
+                  "face_image": {
+                    "type": "string",
+                    "description": "Base64 encoded string of student's photo"
+                  },
+                  "voice_clip": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Optional audio recording containing student's voice profile"
+                  }
+                },
+                "required": ["name", "face_image"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Registration result status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "message": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid parameters"
+          },
+          "409": {
+            "description": "Student name already registered"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/detect_faces": {
+      "post": {
+        "summary": "Detect Faces In Real Time",
+        "description": "Identifies students from an image payload without establishing a session login.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "image": {
+                    "type": "string",
+                    "description": "Base64 encoded image string to inspect"
+                  }
+                },
+                "required": ["image"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Detection results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "num_faces": { "type": "integer" },
+                    "recognized": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "student_id": { "type": "string" },
+                          "name": { "type": "string" },
+                          "confidence": { "type": "number" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "No image payload"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/create_attendance": {
+      "post": {
+        "summary": "Log Attendance (Teacher)",
+        "description": "Saves attendance records for a class subject. Requires Teacher session.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "subject_id": { "type": "string", "description": "Subject database ID" },
+                  "student_ids": {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "description": "List of student IDs marked present"
+                  }
+                },
+                "required": ["subject_id", "student_ids"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Attendance logging result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "count": { "type": "integer", "description": "Number of students logged" }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing parameters"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/create_subject": {
+      "post": {
+        "summary": "Create Class Subject (Teacher)",
+        "description": "Registers a new subject and registry code. Requires Teacher session.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string", "description": "Name of the subject" },
+                  "code": { "type": "string", "description": "Unique subject code identifier" },
+                  "section": { "type": "string", "description": "Class section" }
+                },
+                "required": ["name", "code", "section"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Subject creation success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation errors or missing parameters"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/enroll_subject": {
+      "post": {
+        "summary": "Enroll Student in Course",
+        "description": "Enrolls the logged-in student in a subject using its registry code. Requires Student session.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "subject_id": { "type": "string", "description": "Subject registry code" }
+                },
+                "required": ["subject_id"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Enrollment success status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid registry code"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/unenroll_subject": {
+      "post": {
+        "summary": "Unenroll Student from Course",
+        "description": "Unenrolls the logged-in student from a subject using its registry code. Requires Student session.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "subject_id": { "type": "string", "description": "Subject registry code" }
+                },
+                "required": ["subject_id"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Unenrollment success status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid registry code"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/delete_student": {
+      "post": {
+        "summary": "Delete Student (Teacher)",
+        "description": "Permanently deletes a student profile from the database. Requires Teacher session.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "student_id": { "type": "string", "description": "The student ID to delete" }
+                },
+                "required": ["student_id"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Deletion success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing student ID"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/save_settings": {
+      "post": {
+        "summary": "Update Recognition Thresholds",
+        "description": "Updates the server settings for biometrics recognition. Requires User session.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "face_threshold": { "type": "number", "example": 0.6, "description": "Face threshold" },
+                  "voice_threshold": { "type": "number", "example": 0.7, "description": "Voice threshold" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Threshold update success status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/attendance/export": {
+      "get": {
+        "summary": "Export Logs to CSV (Teacher)",
+        "description": "Generates a downloadable CSV containing attendance logs for all subjects owned by the teacher. Requires Teacher session.",
+        "responses": {
+          "200": {
+            "description": "A CSV file with attendance data",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

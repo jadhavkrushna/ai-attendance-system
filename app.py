@@ -606,6 +606,283 @@ def make_response(data):
     return Response(data, mimetype='text/csv')
 
 # ---------------------------------------------------------------------------
+# Swagger UI Endpoints
+# ---------------------------------------------------------------------------
+
+@app.route('/swagger.json')
+def swagger_json_route():
+    return app.send_static_file('swagger.json')
+
+@app.route('/swagger')
+def swagger_ui_route():
+    return """<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Fluentia API Documentation</title>
+  <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css" />
+  <link rel="icon" type="image/png" href="https://i.ibb.co/YTYGn5qV/logo.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Premium customization for Swagger UI */
+    body {
+      font-family: 'Outfit', sans-serif !important;
+      background-color: #0f172a; /* Slate 900 background */
+      color: #f1f5f9;
+      margin: 0;
+    }
+    .swagger-ui {
+      font-family: 'Outfit', sans-serif !important;
+    }
+    /* Brand Header */
+    .brand-header {
+      background: linear-gradient(135deg, #1e1b4b 0%, #311042 100%);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+    .brand-header .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-header img {
+      height: 40px;
+      width: auto;
+    }
+    .brand-header h1 {
+      color: #ffffff;
+      margin: 0;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .brand-header .badge {
+      background: rgba(255, 255, 255, 0.1);
+      color: #e2e8f0;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 500;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .brand-header .back-btn {
+      color: #94a3b8;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: all 0.2s;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .brand-header .back-btn:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    /* Dark Mode Overrides for Swagger UI elements */
+    .swagger-ui .info .title, 
+    .swagger-ui .info h1, 
+    .swagger-ui .info h2, 
+    .swagger-ui .info h3, 
+    .swagger-ui .info h4, 
+    .swagger-ui .info h5, 
+    .swagger-ui .info p, 
+    .swagger-ui .info li,
+    .swagger-ui .info table {
+      color: #f1f5f9 !important;
+    }
+    .swagger-ui .info .description {
+      color: #94a3b8 !important;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+    .swagger-ui .scheme-container {
+      background-color: #1e293b !important;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
+      border-radius: 12px;
+      margin: 20px 0;
+      padding: 20px !important;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .swagger-ui select {
+      background-color: #0f172a !important;
+      color: #f1f5f9 !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      border-radius: 6px !important;
+    }
+    .swagger-ui .opblock {
+      background-color: #1e293b !important;
+      border: 1px solid rgba(255, 255, 255, 0.05) !important;
+      border-radius: 12px !important;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+      overflow: hidden;
+    }
+    .swagger-ui .opblock .opblock-summary {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+      padding: 12px 20px !important;
+    }
+    .swagger-ui .opblock .opblock-summary-path {
+      color: #f1f5f9 !important;
+      font-weight: 600 !important;
+    }
+    .swagger-ui .opblock-description-wrapper p, 
+    .swagger-ui .opblock-external-docs-wrapper p, 
+    .swagger-ui .opblock-title_normal p {
+      color: #cbd5e1 !important;
+    }
+    .swagger-ui .tabli button {
+      color: #94a3b8 !important;
+    }
+    .swagger-ui .tabli.active button {
+      color: #38bdf8 !important;
+    }
+    .swagger-ui .opblock .opblock-section-header {
+      background-color: rgba(255, 255, 255, 0.02) !important;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+      border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+    }
+    .swagger-ui .opblock .opblock-section-header h4 {
+      color: #f1f5f9 !important;
+    }
+    .swagger-ui .table-container,
+    .swagger-ui table.headers {
+      padding: 10px 20px !important;
+    }
+    .swagger-ui table tbody tr td {
+      color: #cbd5e1 !important;
+    }
+    .swagger-ui .parameter__name {
+      color: #f1f5f9 !important;
+      font-weight: 600 !important;
+    }
+    .swagger-ui .parameter__type {
+      color: #38bdf8 !important;
+    }
+    .swagger-ui input[type=text] {
+      background-color: #0f172a !important;
+      color: #f1f5f9 !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      border-radius: 6px !important;
+      padding: 8px 12px !important;
+    }
+    .swagger-ui .btn {
+      border-radius: 8px !important;
+      font-weight: 600 !important;
+      transition: all 0.2s !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    }
+    .swagger-ui .btn.execute {
+      background-color: #3b82f6 !important;
+      color: #ffffff !important;
+      border-color: #3b82f6 !important;
+    }
+    .swagger-ui .btn.execute:hover {
+      background-color: #2563eb !important;
+    }
+    .swagger-ui .btn.cancel {
+      background-color: #ef4444 !important;
+      color: #ffffff !important;
+      border-color: #ef4444 !important;
+    }
+    .swagger-ui .btn.cancel:hover {
+      background-color: #dc2626 !important;
+    }
+    .swagger-ui .response-col_status {
+      color: #f1f5f9 !important;
+    }
+    .swagger-ui .response-col_links {
+      color: #cbd5e1 !important;
+    }
+    .swagger-ui .opblock-body pre.microlight {
+      background-color: #0f172a !important;
+      border: 1px solid rgba(255, 255, 255, 0.05) !important;
+      border-radius: 8px !important;
+      color: #34d399 !important;
+      padding: 16px !important;
+    }
+    .swagger-ui .opblock-body pre.microlight code {
+      font-family: monospace !important;
+    }
+    .swagger-ui .model-box {
+      background-color: #0f172a !important;
+      border: 1px solid rgba(255, 255, 255, 0.05) !important;
+      border-radius: 8px !important;
+      padding: 12px !important;
+    }
+    .swagger-ui .model-title {
+      color: #f1f5f9 !important;
+    }
+    .swagger-ui .model {
+      color: #cbd5e1 !important;
+    }
+    .swagger-ui .prop-type {
+      color: #38bdf8 !important;
+    }
+    .swagger-ui .prop-format {
+      color: #94a3b8 !important;
+    }
+    /* Specific styling for HTTP methods badge */
+    .swagger-ui .opblock.opblock-post {
+      background-color: #1e293b !important;
+      border-color: rgba(16, 185, 129, 0.2) !important;
+    }
+    .swagger-ui .opblock.opblock-post .opblock-summary-method {
+      background-color: #10b981 !important;
+      color: #ffffff !important;
+      border-radius: 6px !important;
+    }
+    .swagger-ui .opblock.opblock-get {
+      background-color: #1e293b !important;
+      border-color: rgba(59, 130, 246, 0.2) !important;
+    }
+    .swagger-ui .opblock.opblock-get .opblock-summary-method {
+      background-color: #3b82f6 !important;
+      color: #ffffff !important;
+      border-radius: 6px !important;
+    }
+    /* Hide topbar since we have our custom premium header */
+    .swagger-ui .topbar {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <header class="brand-header">
+    <div class="logo-container">
+      <img src="https://i.ibb.co/YTYGn5qV/logo.png" alt="Fluentia Logo" />
+      <h1>Fluentia Portal</h1>
+      <span class="badge">API Playground</span>
+    </div>
+    <a href="/" class="back-btn">&#8592; Back to Portal</a>
+  </header>
+  <div id="swagger-ui"></div>
+  <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js" charset="UTF-8"></script>
+  <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-standalone-preset.js" charset="UTF-8"></script>
+  <script>
+    window.onload = () => {
+      window.ui = SwaggerUIBundle({
+        url: '/swagger.json',
+        dom_id: '#swagger-ui',
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIStandalonePreset
+        ],
+        layout: "BaseLayout",
+        deepLinking: true,
+        persistAuthorization: true
+      });
+    };
+  </script>
+</body>
+</html>"""
+
+# ---------------------------------------------------------------------------
 # Streamlit & Background Thread Initialization
 # ---------------------------------------------------------------------------
 
