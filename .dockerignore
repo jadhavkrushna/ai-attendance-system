@@ -1,0 +1,28 @@
+# Python virtual environment — never copy into Docker (packages are installed fresh)
+.venv/
+venv/
+env/
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Git history
+.git/
+.gitignore
+
+# Local environment files (secrets are passed as env vars to the container)
+.env
+.streamlit/
+
+# Development/editor files
+*.log
+.agents/
+deployment_guide.md
+
+# Node (not needed)
+node_modules/
+package-lock.json
