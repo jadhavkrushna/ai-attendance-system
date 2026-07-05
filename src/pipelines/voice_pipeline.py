@@ -2,10 +2,11 @@ from resemblyzer import VoiceEncoder, preprocess_wav
 import numpy as np 
 import io
 import librosa
-import streamlit as st
+from functools import lru_cache
+import logging
 
 
-@st.cache_resource
+@lru_cache(maxsize=1)
 def load_voice_encoder():
     return VoiceEncoder()
 
@@ -19,7 +20,7 @@ def get_voice_embedding(audio_bytes):
         embedding = encoder.embed_utterance(wav)
         return embedding.tolist()
     except Exception as e:
-        st.error('Voice recog error')
+        logging.error(f"Voice recognition error: {e}")
         return None
     
 
@@ -72,5 +73,5 @@ def process_bulk_audio(audio_bytes, candidates_dict, threshold=0.65):
 
         return identified_results
     except Exception as e:
-        st.error('Bulk process error')
+        logging.error(f"Bulk process error: {e}")
         return {}

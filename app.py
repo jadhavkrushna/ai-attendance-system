@@ -886,24 +886,35 @@ def swagger_ui_route():
 # Streamlit & Background Thread Initialization
 # ---------------------------------------------------------------------------
 
-# Start Flask in a background thread once per server process
-if not hasattr(app, '_flask_started'):
-    app._flask_started = True
-    def run_flask():
-        app.run(host="0.0.0.0", port=5000, debug=False, use_reloader=False)
+if __name__ == '__main__':
+    # Detect if run under Streamlit
+    try:
+        is_streamlit = st.runtime.exists()
+    except (ImportError, AttributeError):
+        is_streamlit = False
     
-    t = threading.Thread(target=run_flask, daemon=True)
-    t.start()
+    if is_streamlit:
+        # Start Flask in a background thread once per server process
+        if not hasattr(app, '_flask_started'):
+            app._flask_started = True
+            def run_flask():
+                app.run(host="0.0.0.0", port=5000, debug=False, use_reloader=False)
+            
+            t = threading.Thread(target=run_flask, daemon=True)
+            t.start()
 
-# Streamlit Page Config & Redirect Reroute
-st.set_page_config(
-    page_title="Fluentia Portal",
-    page_icon="https://i.ibb.co/YTYGn5qV/logo.png",
-    layout="centered"
-)
+        # Streamlit Page Config & Redirect Reroute
+        st.set_page_config(
+            page_title="Fluentia Portal",
+            page_icon="https://i.ibb.co/YTYGn5qV/logo.png",
+            layout="centered"
+        )
 
-st.markdown('<meta http-equiv="refresh" content="0;URL=\'http://localhost:5000/\'" />', unsafe_allow_html=True)
+        st.markdown('<meta http-equiv="refresh" content="0;URL=\'http://localhost:5000/\'" />', unsafe_allow_html=True)
 
-st.title("Launching Fluentia Portal...")
-st.write("Connecting to the premium Fluent UI Attendance portal at http://localhost:5000...")
-st.markdown("[Click here to open the portal directly](http://localhost:5000)")
+        st.title("Launching Fluentia Portal...")
+        st.write("Connecting to the premium Fluent UI Attendance portal at http://localhost:5000...")
+        st.markdown("[Click here to open the portal directly](http://localhost:5000)")
+    else:
+        # Running Flask in foreground (direct script execution)
+        app.run(host="0.0.0.0", port=5000, debug=True)
