@@ -36,7 +36,7 @@ graph TD
     User([Student / Teacher]) -->|Interacts with| WebUI[HTML5 Responsive Web UI]
     WebUI -->|Capture Webcam Photo / Voice Clip| Flask[Flask Web Server]
     
-    subgraph AI Recognition Pipelines
+    subgraph pipelines ["AI Recognition Pipelines"]
         Flask -->|Extract Landmarks & Encodes| Dlib[dlib / face_recognition]
         Dlib -->|SVM Classification| SVM[Scikit-Learn Classifier]
         
@@ -44,7 +44,7 @@ graph TD
         Librosa -->|Deep Voice Vectorization| Resemblyzer[Resemblyzer / PyTorch]
     end
     
-    subgraph Data Layer
+    subgraph datalayer ["Data Layer"]
         SVM -->|Match Biometrics| Supabase[(Supabase Cloud Database)]
         Resemblyzer -->|Verify Identity| Supabase
     end
@@ -59,6 +59,9 @@ graph TD
     style Librosa fill:#FFE0B2,stroke:#F57C00,stroke-width:2px,color:#000;
     style Resemblyzer fill:#F3E5F5,stroke:#8E24AA,stroke-width:2px,color:#000;
     style Supabase fill:#E0F2F1,stroke:#00796B,stroke-width:2px,color:#000;
+    
+    style pipelines fill:#F4F6FF,stroke:#7C6CF6,stroke-width:1px,stroke-dasharray: 5 5;
+    style datalayer fill:#F0FDFA,stroke:#0D9488,stroke-width:1px,stroke-dasharray: 5 5;
 ```
 
 ---
