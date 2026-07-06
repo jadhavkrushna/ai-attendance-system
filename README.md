@@ -50,6 +50,15 @@ graph TD
     end
     
     Supabase -->|Sync Rosters & Logs| WebUI
+
+    style User fill:#FFD2E5,stroke:#FF4B91,stroke-width:2px,color:#000;
+    style WebUI fill:#EBEBFF,stroke:#7C6CF6,stroke-width:2px,color:#000;
+    style Flask fill:#E1F5FE,stroke:#0288D1,stroke-width:2px,color:#000;
+    style Dlib fill:#E8F5E9,stroke:#4CAF50,stroke-width:2px,color:#000;
+    style SVM fill:#FFF9C4,stroke:#FBC02D,stroke-width:2px,color:#000;
+    style Librosa fill:#FFE0B2,stroke:#F57C00,stroke-width:2px,color:#000;
+    style Resemblyzer fill:#F3E5F5,stroke:#8E24AA,stroke-width:2px,color:#000;
+    style Supabase fill:#E0F2F1,stroke:#00796B,stroke-width:2px,color:#000;
 ```
 
 ---
@@ -57,16 +66,17 @@ graph TD
 ## 🛠️ Built With
 
 ### Web & Backend
-* ![Flask](https://img.shields.io/badge/Flask-000000?style=flat-square&logo=flask&logoColor=white) - Core web framework
-* ![Gunicorn](https://img.shields.io/badge/Gunicorn-499848?style=flat-square&logo=gunicorn&logoColor=white) - Production WSGI server
-* ![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=flat-square&logo=supabase&logoColor=white) - Database & storage backend
+* ![Flask](https://img.shields.io/badge/Flask-000000?style=flat-square&logo=flask&logoColor=white) **Flask** - Core web server and routing engine.
+* ![Gunicorn](https://img.shields.io/badge/Gunicorn-499848?style=flat-square&logo=gunicorn&logoColor=white) **Gunicorn** - High-performance production WSGI server.
+* ![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=flat-square&logo=supabase&logoColor=white) **Supabase** - PostgreSQL cloud database and API middleware.
+* ![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=flat-square&logo=swagger&logoColor=black) **Swagger UI** - Interactive REST API tester.
 
 ### Biometrics & AI
-* ![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=flat-square&logo=pytorch&logoColor=white) - Deep learning backend for voice embeddings
-* ![Scikit-Learn](https://img.shields.io/badge/scikit_learn-F7931E?style=flat-square&logo=scikit-learn&logoColor=white) - Support Vector Machine (SVM) classifier for face profiles
-* ![Librosa](https://img.shields.io/badge/Librosa-FF5500?style=flat-square) - Audio & music processing library
-* ![dlib](https://img.shields.io/badge/dlib-00599C?style=flat-square&logo=c%2B%2B&logoColor=white) - C++ toolkit for machine learning & facial landmarking
-* ![Pillow](https://img.shields.io/badge/Pillow-blue?style=flat-square) - Python Imaging Library
+* ![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=flat-square&logo=pytorch&logoColor=white) **PyTorch** - Neural network engine backing voice embeddings.
+* ![Scikit-Learn](https://img.shields.io/badge/scikit_learn-F7931E?style=flat-square&logo=scikit-learn&logoColor=white) **Scikit-Learn** - Support Vector Machine (SVM) classification for face profiles.
+* ![dlib](https://img.shields.io/badge/dlib-00599C?style=flat-square&logo=c%2B%2B&logoColor=white) **dlib & face-recognition** - Deep learning facial landmark detector.
+* ![Librosa](https://img.shields.io/badge/Librosa-FF5500?style=flat-square) **Librosa & webrtcvad** - Audio loading, voice activity detection, and speech feature processing.
+* ![Pillow](https://img.shields.io/badge/Pillow-blue?style=flat-square) **Pillow** - Image manipulation pipeline.
 
 ---
 
