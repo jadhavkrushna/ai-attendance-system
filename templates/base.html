@@ -100,6 +100,20 @@
         </aside>
 
         <main class="main-content">
+            <!-- Mobile Top Bar (Visible only on mobile) -->
+            <div class="mobile-top-bar">
+                <div class="mobile-brand">
+                    <img src="{{ url_for('static', filename='img/3d/logo.png') }}" alt="Logo">
+                    <span>Fluentia</span>
+                </div>
+                <div class="mobile-user-actions">
+                    <span class="mobile-username">{{ session.get('name', 'User') }}</span>
+                    <a href="/logout" class="mobile-logout-btn" title="Logout">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </a>
+                </div>
+            </div>
+
             <!-- Flash Notification -->
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}

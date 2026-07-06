@@ -4,7 +4,7 @@
 
 {% block guest_content %}
 <div class="guest-shell landing-shell"
-    style="min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; padding: 40px 80px; position: relative;">
+    style="min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; position: relative;">
 
     <!-- Top Header / Navigation -->
     <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
@@ -12,14 +12,13 @@
             style="display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: nowrap; text-align: left; margin-top: 36px;">
             <img src="{{ url_for('static', filename='img/3d/logo.png') }}" alt="Fluentia Logo"
                 style="height: 64px; border-radius: 16px; box-shadow: 0 8px 24px rgba(91, 91, 214, 0.15); margin-bottom: 12px;">
-            <h1 class="brand-wordmark"
-                style="font-family: 'Inter', sans-serif; font-size: 3.2rem; font-weight: 800; color: var(--text-dark); letter-spacing: 0; line-height: 1; margin: 0;">
+            <h1 class="brand-wordmark">
                 Fluentia
             </h1>
         </div>
     </div>
 
-    <p style="color: var(--text-muted); font-size: 1.15rem; font-weight: 600; margin-top: 10px; text-align: center;">
+    <p class="brand-subtitle">
         Where Learning Meets Creativity</p>
 
     <!-- Center Cards Section -->
@@ -112,7 +111,7 @@
 
     <!-- Bottom Footer -->
     <div class="bottom-branding">
-        designed with<i class="fa-solid fa-heart" style="color: var(--danger);"></i> by <strong>KRUSHNA JADHAV</strong>
+        designed with <i class="fa-solid fa-heart" style="color: var(--danger);"></i> by <strong>KRUSHNA JADHAV</strong>
     </div>
 
 </div>
