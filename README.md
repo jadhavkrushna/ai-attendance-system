@@ -1,40 +1,13 @@
-# AI Attendance System
+## 🛠️ Built With
 
-Streamlit-based attendance application with face-recognition dependencies.
+### Web & Backend
+* ![Flask](https://img.shields.io/badge/Flask-000000?style=flat-square&logo=flask&logoColor=white) - Core web framework
+* ![Gunicorn](https://img.shields.io/badge/Gunicorn-499848?style=flat-square&logo=gunicorn&logoColor=white) - Production WSGI server
+* ![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=flat-square&logo=supabase&logoColor=white) - Database & storage backend
 
-## Windows Setup
-
-Python 3.13 is recommended for a fresh environment. From PowerShell in the
-project directory, run:
-
-```powershell
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
-.\scripts\setup_environment.ps1
-.\.venv\Scripts\Activate.ps1
-streamlit run app.py
-```
-
-The app is then available at `http://localhost:8501`.
-
-The setup script reuses an existing `.venv`. To intentionally rebuild it with
-the recommended Python version, run:
-
-```powershell
-.\scripts\setup_environment.ps1 -Recreate -PythonVersion 3.13
-```
-
-## Face Recognition Dependency
-
-On Windows, this project uses the prebuilt `dlib-bin` wheel. The upstream
-`face-recognition` package declares a dependency named `dlib`, even though
-`dlib-bin` provides the same importable `dlib` module. The setup script
-therefore installs `face-recognition` with `--no-deps` after installing
-`dlib-bin` and verifies the real imports.
-
-Because of that package metadata mismatch, `pip check` can report that
-`face-recognition` requires `dlib`; use the verification command below to
-check this project's working environment instead:
-
-```powershell
-.\.venv\Scripts\python.exe .\scripts\verify_environment.py
-```
+### Biometrics & AI
+* ![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=flat-square&logo=pytorch&logoColor=white) - Deep learning backend for voice embeddings
+* ![Scikit-Learn](https://img.shields.io/badge/scikit_learn-F7931E?style=flat-square&logo=scikit-learn&logoColor=white) - Support Vector Machine (SVM) classifier for face profiles
+* ![Librosa](https://img.shields.io/badge/Librosa-FF5500?style=flat-square) - Audio & music processing library
+* ![dlib](https://img.shields.io/badge/dlib-00599C?style=flat-square&logo=c%2B%2B&logoColor=white) - C++ toolkit for machine learning & facial landmarking
+* ![Pillow](https://img.shields.io/badge/Pillow-blue?style=flat-square) - Python Imaging Library
