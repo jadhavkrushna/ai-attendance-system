@@ -14,6 +14,12 @@ Fluentia is a state-of-the-art, secure, and fully responsive web application tha
   <img src="https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render" alt="Render" />
 </p>
 
+<p align="center">
+  <img src="https://img.shields.io/badge/AI%20%2F%20ML-Biometrics-FF4B91?style=for-the-badge" alt="AI/ML Biometrics" />
+  <img src="https://img.shields.io/badge/Face--Recog-dlib%20%2F%20SVM-7C6CF6?style=for-the-badge" alt="Face Recognition" />
+  <img src="https://img.shields.io/badge/Voice--Recog-PyTorch%20%2F%20Librosa-9D8CFF?style=for-the-badge" alt="Voice Recognition" />
+</p>
+
 ---
 
 ## 🌟 Key Features
