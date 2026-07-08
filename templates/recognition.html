@@ -12,30 +12,6 @@
         </div>
     </div>
 
-    <div class="insight-strip">
-        <div class="insight-card">
-            <img src="{{ url_for('static', filename='img/3d/photo_camera.svg') }}" alt="Camera">
-            <div>
-                <h4>Capture frame</h4>
-                <p>Take one clear classroom frame before committing attendance.</p>
-            </div>
-        </div>
-        <div class="insight-card">
-            <img src="{{ url_for('static', filename='img/3d/verified.svg') }}" alt="Verified">
-            <div>
-                <h4>Match profiles</h4>
-                <p>Detected faces are compared against enrolled biometric profiles.</p>
-            </div>
-        </div>
-        <div class="insight-card">
-            <img src="{{ url_for('static', filename='img/3d/fact_check.svg') }}" alt="Attendance">
-            <div>
-                <h4>Commit roster</h4>
-                <p>Review recognized students before writing attendance logs.</p>
-            </div>
-        </div>
-    </div>
-
     <!-- Scanner grid -->
     <div class="recognition-console">
         
@@ -43,7 +19,7 @@
         <div class="glass-card" style="padding: 24px; border-radius: 20px; background: rgba(255, 255, 255, 0.85); box-shadow: var(--shadow-soft);">
             
             <div class="form-group" style="margin-bottom: 20px;">
-                <label>Select Active Subject Course</label>
+                <label for="scan-subject-id">Select Active Subject Course</label>
                 <div style="position: relative;">
                     <select id="scan-subject-id" class="form-control" style="border-radius: 16px; background: #ffffff; appearance: none; padding-right: 40px; font-weight: 600; color: var(--text-dark);">
                         {% for sub in subjects %}
@@ -100,6 +76,30 @@
             </div>
         </div>
 
+    </div>
+
+    <div class="insight-strip" style="margin-top: 24px;">
+        <div class="insight-card">
+            <img src="{{ url_for('static', filename='img/3d/photo_camera.svg') }}" alt="Camera">
+            <div>
+                <h4>Capture frame</h4>
+                <p>Take one clear classroom frame before committing attendance.</p>
+            </div>
+        </div>
+        <div class="insight-card">
+            <img src="{{ url_for('static', filename='img/3d/verified.svg') }}" alt="Verified">
+            <div>
+                <h4>Match profiles</h4>
+                <p>Detected faces are compared against enrolled biometric profiles.</p>
+            </div>
+        </div>
+        <div class="insight-card">
+            <img src="{{ url_for('static', filename='img/3d/fact_check.svg') }}" alt="Attendance">
+            <div>
+                <h4>Commit roster</h4>
+                <p>Review recognized students before writing attendance logs.</p>
+            </div>
+        </div>
     </div>
 </div>
 

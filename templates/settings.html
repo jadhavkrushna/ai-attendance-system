@@ -23,7 +23,7 @@
                 <p>Set matching confidence limits for vision classifier and voice comparison routines.</p>
                 
                 <div class="form-group">
-                    <label>Face Identification Distance Limit (lower is stricter)</label>
+                    <label for="face-range">Face Identification Distance Limit (lower is stricter)</label>
                     <div class="slider-container">
                         <input type="range" id="face-range" class="range-slider" min="0.3" max="0.9" step="0.05" value="{{ config.face_threshold }}" oninput="updateRangeVal('face-range', 'face-val')">
                         <span id="face-val" class="slider-val">{{ config.face_threshold }}</span>
@@ -31,7 +31,7 @@
                 </div>
 
                 <div class="form-group" style="margin-top: 24px;">
-                    <label>Voice Passphrase Matching Score Limit (higher is stricter)</label>
+                    <label for="voice-range">Voice Passphrase Matching Score Limit (higher is stricter)</label>
                     <div class="slider-container">
                         <input type="range" id="voice-range" class="range-slider" min="0.4" max="0.9" step="0.05" value="{{ config.voice_threshold }}" oninput="updateRangeVal('voice-range', 'voice-val')">
                         <span id="voice-val" class="slider-val">{{ config.voice_threshold }}</span>

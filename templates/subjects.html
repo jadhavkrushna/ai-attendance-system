@@ -105,17 +105,17 @@
             <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 24px; font-weight: 500;">Enter course parameters to create active student rosters.</p>
             
             <div class="form-group">
-                <label>Subject Name</label>
+                <label for="new-sub-name">Subject Name</label>
                 <input type="text" id="new-sub-name" class="form-control" placeholder="E.g. Computer Science">
             </div>
             
             <div class="form-group">
-                <label>Subject Code</label>
+                <label for="new-sub-code">Subject Code</label>
                 <input type="text" id="new-sub-code" class="form-control" placeholder="E.g. CS-301">
             </div>
 
             <div class="form-group">
-                <label>Section / Batch</label>
+                <label for="new-sub-section">Section / Batch</label>
                 <input type="text" id="new-sub-section" class="form-control" placeholder="E.g. A-3 or Batch-2026">
             </div>
 
@@ -137,7 +137,7 @@
             </div>
 
             <div class="form-group" style="text-align: left;">
-                <label>Subject Registry Enrollment ID</label>
+                <label for="share-subject-id">Subject Registry Enrollment ID</label>
                 <div style="display: flex; gap: 8px;">
                     <input type="text" id="share-subject-id" class="form-control" style="background: rgba(91, 91, 214, 0.03); text-align: center;" readonly>
                     <button onclick="copySubjectId()" class="btn-pill" style="padding: 10px; border: none; aspect-ratio: 1/1; justify-content: center;"><i class="fa-solid fa-copy"></i></button>

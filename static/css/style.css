@@ -440,12 +440,27 @@ body {
     padding: 20px 32px;
     min-height: 100vh;
     height: 100vh;
-    overflow: hidden;
+    overflow-y: auto;
     position: relative;
     background:
         linear-gradient(90deg, rgba(255, 255, 255, 0.58) 0 1px, transparent 1px 100%),
         linear-gradient(0deg, rgba(255, 255, 255, 0.48) 0 1px, transparent 1px 100%);
     background-size: 44px 44px;
+}
+
+/* Custom premium scrollbar for main content */
+.main-content::-webkit-scrollbar {
+    width: 6px;
+}
+.main-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+.main-content::-webkit-scrollbar-thumb {
+    background: rgba(91, 91, 214, 0.15);
+    border-radius: 10px;
+}
+.main-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(91, 91, 214, 0.3);
 }
 
 .content-header {
@@ -875,7 +890,6 @@ body {
     display: grid;
     grid-template-columns: minmax(0, 1.6fr) minmax(320px, 0.8fr);
     gap: 18px;
-    max-height: calc(100vh - 190px);
 }
 
 .log-stream-list {
@@ -1128,10 +1142,9 @@ body {
 .guest-flash-container {
     position: fixed;
     top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 40px;
     z-index: 9999;
-    width: calc(100% - 40px);
+    width: calc(100% - 80px);
     max-width: 400px;
 }
 
@@ -1141,6 +1154,7 @@ body {
         bottom: 20px;
         left: 50%;
         transform: translateX(-50%);
+        width: calc(100% - 40px);
     }
 }
 
