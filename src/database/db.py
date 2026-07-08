@@ -146,11 +146,29 @@ def get_student_attendance(student_id):
     response = supabase.table('attendance_logs').select('*, subjects(*)').eq('student_id', student_id).execute()
     return response.data
 
-
 def create_attendance(logs):
     response = supabase.table('attendance_logs').insert(logs).execute()
     return response.data
 
 def get_attendance_for_teacher(teacher_id):
-    response = supabase.table('attendance_logs').select("*, subjects!inner(*)").eq('subjects.teacher_id', teacher_id).execute()
-    return response.data
+    response = supabase.table('attendance_logs').select("*, subjects!inner(*), students(*)").eq('subjects.teacher_id', teacher_id).execute()
+    data = response.data
+    
+    flattened = []
+    for row in data:
+        student = row.get('students') or {}
+        subject = row.get('subjects') or {}
+        flattened.append({
+            'attendance_id': row.get('id'),
+            'student_id': row.get('student_id'),
+            'subject_id': row.get('subject_id'),
+            'timestamp': row.get('timestamp'),
+            'is_present': row.get('is_present'),
+            'student_name': student.get('name', 'Unknown'),
+            'subject_name': subject.get('name', 'Unknown'),
+            'subject_code': subject.get('subject_code', ''),
+            'section': subject.get('section', ''),
+            'students': student,
+            'subjects': subject
+        })
+    return flattened

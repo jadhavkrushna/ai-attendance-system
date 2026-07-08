@@ -21,9 +21,9 @@
             <div class="form-group" style="margin-bottom: 20px;">
                 <label for="scan-subject-id">Select Active Subject Course</label>
                 <div style="position: relative;">
-                    <select id="scan-subject-id" class="form-control" style="border-radius: 16px; background: #ffffff; appearance: none; padding-right: 40px; font-weight: 600; color: var(--text-dark);">
+                    <select id="scan-subject-id" class="form-control" style="border-radius: 16px; background: #ffffff; appearance: none; padding-right: 40px; font-weight: 600; color: #1e1b4b !important;">
                         {% for sub in subjects %}
-                        <option value="{{ sub.subject_id }}">{{ sub.subject_name }} ({{ sub.subject_code }})</option>
+                        <option value="{{ sub.subject_id }}" style="color: #1e1b4b;">{{ sub.subject_name }} ({{ sub.subject_code }})</option>
                         {% endfor %}
                     </select>
                     <i class="fa-solid fa-chevron-down" style="position: absolute; right: 18px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none;"></i>
@@ -151,10 +151,11 @@
         listDiv.style.display = 'none';
 
         try {
+            const subId = document.getElementById('scan-subject-id').value;
             const res = await fetch('/api/detect_faces', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ image: dataUrl })
+                body: JSON.stringify({ image: dataUrl, subject_id: subId })
             });
             const data = await res.json();
 
@@ -171,6 +172,22 @@
                     
                     const item = document.createElement('div');
                     item.className = 'log-stream-item';
+                    
+                    let badgeHTML = '';
+                    if (student.already_marked) {
+                        badgeHTML = `
+                            <span style="font-size: 0.8rem; font-weight: 700; color: #f59e0b; background: rgba(245, 158, 11, 0.15); padding: 4px 10px; border-radius: 6px;">
+                                Already Marked
+                            </span>
+                        `;
+                    } else {
+                        badgeHTML = `
+                            <span style="font-size: 0.8rem; font-weight: 700; color: var(--success); background: rgba(74, 222, 128, 0.15); padding: 4px 10px; border-radius: 6px;">
+                                ${student.confidence}% Match
+                            </span>
+                        `;
+                    }
+
                     item.innerHTML = `
                         <div style="display: flex; align-items: center; gap: 12px;">
                             <div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem;">
@@ -178,9 +195,7 @@
                             </div>
                             <span style="font-weight: 700; color: var(--text-dark);">${student.name}</span>
                         </div>
-                        <span style="font-size: 0.8rem; font-weight: 700; color: var(--success); background: rgba(74, 222, 128, 0.15); padding: 4px 10px; border-radius: 6px;">
-                            ${student.confidence}% Match
-                        </span>
+                        ${badgeHTML}
                     `;
                     listDiv.appendChild(item);
                 });

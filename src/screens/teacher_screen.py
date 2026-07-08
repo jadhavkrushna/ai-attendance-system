@@ -159,6 +159,14 @@ def teacher_tab_take_attendance():
                 if not enrolled_students:
                     st.warning('No students enrolled in this course')
                 else:
+                    # Query already marked students today for this subject
+                    today_str = datetime.now().strftime("%Y-%m-%d")
+                    existing_res = supabase.table('attendance_logs')\
+                        .select('student_id')\
+                        .eq('subject_id', selected_subject_id)\
+                        .gte('timestamp', today_str + 'T00:00:00')\
+                        .execute()
+                    already_marked_ids = {int(row['student_id']) for row in existing_res.data}
 
                     results, attendance_to_log  = [], []
 
@@ -167,22 +175,30 @@ def teacher_tab_take_attendance():
 
                     for node in enrolled_students:
                         student = node['students']
-                        sources = all_detected_ids.get(int(student['student_id']), [])
-                        is_present= len(sources) > 0
+                        student_id_int = int(student['student_id'])
+                        
+                        sources = all_detected_ids.get(student_id_int, [])
+                        is_present = len(sources) > 0
+
+                        if student_id_int in already_marked_ids:
+                            status_str = "⚠️ Already Marked Today"
+                        else:
+                            status_str = "✅ Present" if is_present else "❌ Absent"
 
                         results.append({
                             "Name": student['name'],
                             "ID": student['student_id'],
                             "Source": ", ".join(sources) if is_present else "-",
-                            "Status": "✅ Present" if is_present else "❌ Absent"
+                            "Status": status_str
                         })
 
-                        attendance_to_log.append({
-                            'student_id': student['student_id'],
-                            'subject_id': selected_subject_id,
-                            'timestamp': current_timestamp,
-                            'is_present': bool(is_present)
-                        })
+                        if student_id_int not in already_marked_ids:
+                            attendance_to_log.append({
+                                'student_id': student['student_id'],
+                                'subject_id': selected_subject_id,
+                                'timestamp': current_timestamp,
+                                'is_present': bool(is_present)
+                            })
 
                 attendance_result_dialog(pd.DataFrame(results), attendance_to_log)
 

@@ -437,6 +437,7 @@ def api_register_student():
 def api_detect_faces():
     data = request.json
     img_b64 = data.get('image')
+    subject_id = data.get('subject_id')
     if not img_b64:
         return jsonify({'success': False, 'message': 'No image provided.'}), 400
         
@@ -453,12 +454,28 @@ def api_detect_faces():
         all_students = get_all_students()
         student_map = {s['student_id']: s['name'] for s in all_students}
         
+        already_marked_set = set()
+        if subject_id:
+            today_str = datetime.now().strftime("%Y-%m-%d")
+            try:
+                attendance_res = supabase.table('attendance_logs')\
+                    .select('student_id')\
+                    .eq('subject_id', int(subject_id))\
+                    .gte('timestamp', today_str + 'T00:00:00')\
+                    .execute()
+                already_marked_set = {int(row['student_id']) for row in attendance_res.data}
+            except Exception as db_err:
+                print(f"Error querying existing attendance: {db_err}")
+        
         recognized_list = []
         for sid, conf in detected.items():
+            sid_int = int(sid)
+            is_already = sid_int in already_marked_set
             recognized_list.append({
-                'student_id': sid,
-                'name': student_map.get(sid, 'Unknown Student'),
-                'confidence': round(conf * 100, 1)
+                'student_id': sid_int,
+                'name': student_map.get(sid_int, 'Unknown Student'),
+                'confidence': round(conf * 100, 1),
+                'already_marked': is_already
             })
             
         return jsonify({
@@ -481,14 +498,46 @@ def api_create_attendance():
         
     try:
         # Get all enrolled students for this course to mark absent students
-        # For simplicity, we mark the student_ids as Present (is_present=True)
         # SQLite / Supabase query wrapper for enrollment:
-        # We can construct the logs list
+        # We construct the logs list
         now_str = datetime.now().isoformat()
+        today_str = datetime.now().strftime("%Y-%m-%d")
         
         # Call db helper to log attendance
-        is_present_list = [True] * len(student_ids)
-        create_attendance(subject_id, student_ids, is_present_list, now_str)
+        enrolled_res = supabase.table('subject_students').select('student_id').eq('subject_id', int(subject_id)).execute()
+        enrolled_student_ids = [int(row['student_id']) for row in enrolled_res.data]
+        
+        # Find who is already marked today for this subject
+        existing_res = supabase.table('attendance_logs')\
+            .select('student_id')\
+            .eq('subject_id', int(subject_id))\
+            .gte('timestamp', today_str + 'T00:00:00')\
+            .execute()
+        already_marked_ids = {int(row['student_id']) for row in existing_res.data}
+        
+        present_set = {int(sid) for sid in student_ids}
+        
+        logs = []
+        for s_id in enrolled_student_ids:
+            if s_id not in already_marked_ids:
+                logs.append({
+                    'subject_id': int(subject_id),
+                    'student_id': s_id,
+                    'is_present': s_id in present_set,
+                    'timestamp': now_str
+                })
+            
+        for s_id in present_set:
+            if s_id not in enrolled_student_ids and s_id not in already_marked_ids:
+                logs.append({
+                    'subject_id': int(subject_id),
+                    'student_id': s_id,
+                    'is_present': True,
+                    'timestamp': now_str
+                })
+                
+        if logs:
+            create_attendance(logs)
         
         return jsonify({'success': True, 'count': len(student_ids)})
     except Exception as e:
