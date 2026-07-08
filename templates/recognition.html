@@ -23,7 +23,7 @@
                 <div style="position: relative;">
                     <select id="scan-subject-id" class="form-control" style="border-radius: 16px; background: #ffffff; appearance: none; padding-right: 40px; font-weight: 600; color: #1e1b4b !important;">
                         {% for sub in subjects %}
-                        <option value="{{ sub.subject_id }}" style="color: #1e1b4b;">{{ sub.subject_name }} ({{ sub.subject_code }})</option>
+                        <option value="{{ sub.subject_id }}" style="color: #1e1b4b;">{{ sub.name }} ({{ sub.subject_code }})</option>
                         {% endfor %}
                     </select>
                     <i class="fa-solid fa-chevron-down" style="position: absolute; right: 18px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none;"></i>
