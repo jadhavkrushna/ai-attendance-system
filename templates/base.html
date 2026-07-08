@@ -134,7 +134,7 @@
     <div style="min-height: 100vh; position: relative; z-index: 1;">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                <div style="position: fixed; top: 20px; right: 20px; z-index: 9999; max-width: 400px; width: 100%;">
+                <div class="guest-flash-container">
                     {% for category, message in messages %}
                         <div class="flash-message {{ category }}" style="box-shadow: var(--shadow-premium);">
                             <span><i class="fa-solid {% if category == 'success' %}fa-circle-check{% else %}fa-circle-exclamation{% endif %} mr-2"></i> {{ message }}</span>

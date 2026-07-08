@@ -472,13 +472,12 @@
     document.addEventListener("DOMContentLoaded", function () {
         const ctx = document.getElementById('attendance-chart').getContext('2d');
 
-        const labels = {{ chart_labels | tojson | safe if chart_labels else '[]'
-    }};
-    const dataset = {{ chart_dataset | tojson | safe if chart_dataset else '[]' }};
+        const labels = JSON.parse('{{ chart_labels | tojson | safe if chart_labels else "[]" }}');
+        const dataset = JSON.parse('{{ chart_dataset | tojson | safe if chart_dataset else "[]" }}');
 
-    new Chart(ctx, {
-        type: 'line',
-        data: {
+        new Chart(ctx, {
+            type: 'line',
+            data: {
             labels: labels.length > 0 ? labels : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
             datasets: [{
                 label: 'Attendance %',

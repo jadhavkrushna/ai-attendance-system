@@ -320,15 +320,16 @@
     }
 
     // Auto-detect role from URL query parameter on load
-    window.addEventListener('DOMContentLoaded', () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const role = urlParams.get('role') || 'teacher';
-        setRole(role);
+    const urlParams = new URLSearchParams(window.location.search);
+    const role = urlParams.get('role') || 'teacher';
+    setRole(role);
 
-        // If role is explicitly set in URL, hide the tab switcher so only that portal is shown
-        if (urlParams.has('role')) {
-            document.querySelector('.login-tabs').style.display = 'none';
+    // If role is explicitly set in URL, hide the tab switcher so only that portal is shown
+    if (urlParams.has('role')) {
+        const tabs = document.querySelector('.login-tabs');
+        if (tabs) {
+            tabs.style.setProperty('display', 'none', 'important');
         }
-    });
+    }
 </script>
 {% endblock %}

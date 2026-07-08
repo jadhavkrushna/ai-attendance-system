@@ -325,12 +325,29 @@ body {
     width: 300px;
     background: var(--surface);
     border-right: 1px solid var(--border-color);
-    padding: 40px 24px;
+    padding: 32px 24px 24px 24px;
     display: flex;
     flex-direction: column;
     position: fixed;
     height: 100vh;
     z-index: 100;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Custom premium scrollbar for sidebar */
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+.sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.sidebar::-webkit-scrollbar-thumb {
+    background: rgba(91, 91, 214, 0.15);
+    border-radius: 10px;
+}
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: rgba(91, 91, 214, 0.3);
 }
 
 .sidebar-logo {
@@ -338,7 +355,7 @@ body {
     align-items: center;
     gap: 12px;
     margin-top: 8px;
-    margin-bottom: 60px;
+    margin-bottom: 32px;
     padding-left: 12px;
 }
 
@@ -346,7 +363,7 @@ body {
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
     flex-grow: 1;
 }
 
@@ -354,12 +371,12 @@ body {
     display: flex;
     align-items: center;
     gap: 16px;
-    padding: 16px 20px;
-    border-radius: 16px;
+    padding: 12px 18px;
+    border-radius: 14px;
     color: var(--text-muted);
     text-decoration: none;
     font-weight: 600;
-    font-size: 1.05rem;
+    font-size: 1.0rem;
     transition: all 0.2s;
 }
 
@@ -1108,6 +1125,25 @@ body {
 /* ---------------------------------------------------------------------------
    Flash Notifications
    --------------------------------------------------------------------------- */
+.guest-flash-container {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    width: calc(100% - 40px);
+    max-width: 400px;
+}
+
+@media (max-width: 1024px) {
+    .guest-flash-container {
+        top: auto;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+
 .flash-message {
     padding: 16px 24px;
     border-radius: 16px;
@@ -1411,6 +1447,7 @@ body {
         z-index: 1000 !important;
         background: var(--surface) !important;
         box-shadow: 0 -4px 20px rgba(91, 91, 214, 0.08) !important;
+        overflow: hidden !important;
     }
 
     .sidebar-logo,
