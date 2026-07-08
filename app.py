@@ -274,7 +274,7 @@ def attendance_route():
         if search_query:
             match_search = search_query.lower() in log['student_name'].lower()
         if selected_subject:
-            match_subject = log['subject_id'] == selected_subject
+            match_subject = str(log['subject_id']) == str(selected_subject)
             
         if match_search and match_subject:
             filtered_logs.append({

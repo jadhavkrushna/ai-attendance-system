@@ -47,7 +47,7 @@
                     Subject</label>
                 <div style="position: relative;">
                     <select name="subject_id" class="form-control"
-                        style="border-radius: 16px; background: #e6dcdc; padding: 12px 18px; appearance: none; padding-right: 40px; font-weight: 600; color: #1e1b4b !important;">
+                        style="border-radius: 16px; background: #fefdfd; padding: 12px 18px; appearance: none; padding-right: 40px; font-weight: 600; color: #1e1b4b !important;">
                         <option value="" style="color: #1e1b4b;">All Subjects</option>
                         {% for sub in subjects %}
                         <option value="{{ sub.subject_id }}" {% if selected_subject|string==sub.subject_id|string
