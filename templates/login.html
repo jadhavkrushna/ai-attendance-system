@@ -285,11 +285,15 @@
         }
         
         const canvas = document.createElement('canvas');
-        canvas.width = video.videoWidth || 640;
-        canvas.height = video.videoHeight || 480;
+        const sourceWidth = video.videoWidth || 640;
+        const sourceHeight = video.videoHeight || 480;
+        const maxWidth = 480;
+        const scale = Math.min(1, maxWidth / sourceWidth);
+        canvas.width = Math.round(sourceWidth * scale);
+        canvas.height = Math.round(sourceHeight * scale);
         const ctx = canvas.getContext('2d');
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        const dataUrl = canvas.toDataURL('image/jpeg');
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.75);
         
         statusText.innerText = "Verifying face ID matches...";
         statusText.style.color = "var(--primary)";
@@ -300,7 +304,13 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ image: dataUrl })
             });
-            const result = await response.json();
+            let result = {};
+            if ((response.headers.get('content-type') || '').includes('application/json')) {
+                result = await response.json();
+            }
+            if (!response.ok) {
+                throw new Error(result.message || `Server error (${response.status})`);
+            }
             if (result.success) {
                 statusText.innerText = `Verified! Welcome, ${result.name}. Redirecting...`;
                 statusText.style.color = "var(--success)";
@@ -314,7 +324,7 @@
             }
         } catch (err) {
             console.error(err);
-            statusText.innerText = "Biometric server communication failed.";
+            statusText.innerText = err.message || "Biometric server communication failed.";
             statusText.style.color = "var(--danger)";
         }
     }
