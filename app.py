@@ -1,5 +1,6 @@
 import os
 import base64
+import binascii
 import io
 import csv
 import threading
@@ -32,6 +33,7 @@ from src.pipelines.voice_pipeline import get_voice_embedding
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
+app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024  # 10MB payload ceiling
 
 # Simple global config dictionary
 system_config = {
@@ -366,8 +368,13 @@ def settings_route():
 
 @app.route('/api/login_face', methods=['POST'])
 def api_login_face():
-    data = request.json
+    data = request.get_json(silent=True) or {}
     img_b64 = data.get('image')
+    if not img_b64:
+        return jsonify({'success': False, 'message': 'No image data provided.'}), 400
+    if not isinstance(img_b64, str):
+        return jsonify({'success': False, 'message': 'Invalid image payload.'}), 400
+    img_b64 = img_b64.strip()
     if not img_b64:
         return jsonify({'success': False, 'message': 'No image data provided.'}), 400
         
@@ -375,7 +382,7 @@ def api_login_face():
         # Base64 decoding
         if ',' in img_b64:
             img_b64 = img_b64.split(',')[1]
-        img_bytes = base64.b64decode(img_b64)
+        img_bytes = base64.b64decode(img_b64, validate=True)
         image = Image.open(io.BytesIO(img_bytes)).convert('RGB')
         img_arr = np.array(image)
         
@@ -399,6 +406,8 @@ def api_login_face():
                 return jsonify({'success': True, 'name': student['name']})
                 
         return jsonify({'success': False, 'message': 'Face biometrics did not match any enrolled student.'})
+    except (binascii.Error, ValueError, OSError):
+        return jsonify({'success': False, 'message': 'Invalid image encoding.'}), 400
     except Exception as e:
         return jsonify({'success': False, 'message': f'Server error: {str(e)}'}), 500
 
