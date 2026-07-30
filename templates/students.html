@@ -167,7 +167,14 @@
                 method: 'POST',
                 body: formData
             });
-            const data = await res.json();
+            let data;
+            try {
+                const text = await res.text();
+                data = JSON.parse(text);
+            } catch (jsonErr) {
+                data = { success: false, message: 'Server error (' + res.status + ').' };
+            }
+
             if (data.success) {
                 window.location.reload();
             } else {

@@ -525,7 +525,18 @@
                 method: 'POST',
                 body: formData
             });
-            const result = await response.json();
+
+            let result;
+            try {
+                const text = await response.text();
+                result = JSON.parse(text);
+            } catch (jsonErr) {
+                console.error('Failed to parse server response as JSON:', jsonErr);
+                result = {
+                    success: false,
+                    message: 'Server error (' + response.status + '). Please try again later.'
+                };
+            }
 
             if (result.success) {
                 submitBtn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Registered!';

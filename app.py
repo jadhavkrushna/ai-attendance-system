@@ -301,32 +301,58 @@ def reports_route():
     if session.get('role') != 'teacher':
         return redirect(url_for('dashboard_route'))
         
-    logs = get_attendance_for_teacher(session['user_id'])
-    subjects = get_teacher_subjects(session['user_id'])
-    
-    # Subject-wise comparison data
-    sub_totals = {}
-    for log in logs:
-        sid = log['subject_id']
-        sname = log['subject_name']
-        if sid not in sub_totals:
-            sub_totals[sid] = {"name": sname, "total": 0, "present": 0}
-        sub_totals[sid]['total'] += 1
-        if log.get('is_present'):
-            sub_totals[sid]['present'] += 1
-            
-    comparison_labels = []
-    comparison_dataset = []
-    for sid, stats in sub_totals.items():
-        comparison_labels.append(stats['name'])
-        rate = round((stats['present'] / stats['total'] * 100), 1) if stats['total'] > 0 else 0
-        comparison_dataset.append(rate)
+    try:
+        logs = get_attendance_for_teacher(session['user_id'])
+        subjects = get_teacher_subjects(session['user_id'])
         
+        # Initialize sub_totals with all subjects owned by the teacher
+        sub_totals = {
+            sub['subject_id']: {"name": sub['name'], "total": 0, "present": 0}
+            for sub in (subjects or [])
+        }
+        
+        for log in (logs or []):
+            sid = log['subject_id']
+            sname = log.get('subject_name', 'Unknown')
+            if sid not in sub_totals:
+                sub_totals[sid] = {"name": sname, "total": 0, "present": 0}
+            sub_totals[sid]['total'] += 1
+            if log.get('is_present'):
+                sub_totals[sid]['present'] += 1
+                
+        comparison_labels = []
+        comparison_dataset = []
+        for sid, stats in sub_totals.items():
+            comparison_labels.append(stats['name'])
+            rate = round((stats['present'] / stats['total'] * 100), 1) if stats['total'] > 0 else 0
+            comparison_dataset.append(rate)
+
+        # Defaulter count (< 75% threshold)
+        student_course_stats = {}
+        for log in (logs or []):
+            std_id = log['student_id']
+            if std_id not in student_course_stats:
+                student_course_stats[std_id] = {"total": 0, "present": 0}
+            student_course_stats[std_id]['total'] += 1
+            if log.get('is_present'):
+                student_course_stats[std_id]['present'] += 1
+                
+        defaulters_count = sum(
+            1 for stats in student_course_stats.values()
+            if (stats['present'] / stats['total'] * 100 if stats['total'] > 0 else 0) < 75.0
+        )
+    except Exception as e:
+        flash(f"Error loading analytics data: {str(e)}", "error")
+        comparison_labels = []
+        comparison_dataset = []
+        defaulters_count = 0
+
     return render_template(
         'reports.html',
         active_page='reports',
         comparison_labels=comparison_labels,
-        comparison_dataset=comparison_dataset
+        comparison_dataset=comparison_dataset,
+        defaulters_count=defaulters_count
     )
 
 @app.route('/settings')
@@ -376,34 +402,46 @@ def api_login_face():
     except Exception as e:
         return jsonify({'success': False, 'message': f'Server error: {str(e)}'}), 500
 
+@app.errorhandler(Exception)
+def handle_global_exception(e):
+    code = getattr(e, 'code', 500)
+    if request.path.startswith('/api/'):
+        msg = str(e) or 'Internal Server Error'
+        return jsonify({'success': False, 'message': f'Server error: {msg}'}), code
+    return f"Internal Server Error: {str(e)}", code
+
 @app.route('/api/register_student', methods=['POST'])
 def api_register_student():
-    name = request.form.get('name', '').strip()
-    face_img_b64 = request.form.get('face_image')
-    voice_file = request.files.get('voice_clip')
-    
-    # --- Validation ---
-    if not name:
-        return jsonify({'success': False, 'message': 'Student name is required.'}), 400
-    if len(name) < 2:
-        return jsonify({'success': False, 'message': 'Name must be at least 2 characters.'}), 400
-    if not face_img_b64:
-        return jsonify({'success': False, 'message': 'Face photo is required for biometric enrolment.'}), 400
-    
-    # Check if student with same name already registered
-    if check_student_exists_by_name(name):
-        return jsonify({
-            'success': False,
-            'message': f'A student named "{name}" is already registered. If this is you, please use the Student Login instead.',
-            'already_registered': True
-        }), 409
-        
     try:
+        name = request.form.get('name', '').strip()
+        face_img_b64 = request.form.get('face_image')
+        voice_file = request.files.get('voice_clip')
+        
+        # --- Validation ---
+        if not name:
+            return jsonify({'success': False, 'message': 'Student name is required.'}), 400
+        if len(name) < 2:
+            return jsonify({'success': False, 'message': 'Name must be at least 2 characters.'}), 400
+        if not face_img_b64:
+            return jsonify({'success': False, 'message': 'Face photo is required for biometric enrolment.'}), 400
+        
+        # Check if student with same name already registered
+        if check_student_exists_by_name(name):
+            return jsonify({
+                'success': False,
+                'message': f'A student named "{name}" is already registered. If this is you, please use the Student Login instead.',
+                'already_registered': True
+            }), 409
+            
         if ',' in face_img_b64:
             face_img_b64 = face_img_b64.split(',')[1]
-        img_bytes = base64.b64decode(face_img_b64)
-        image = Image.open(io.BytesIO(img_bytes)).convert('RGB')
-        img_arr = np.array(image)
+            
+        try:
+            img_bytes = base64.b64decode(face_img_b64)
+            image = Image.open(io.BytesIO(img_bytes)).convert('RGB')
+            img_arr = np.array(image)
+        except Exception:
+            return jsonify({'success': False, 'message': 'Invalid image data. Please capture your photo again.'}), 400
         
         # Extract face embeddings
         encodings = get_face_embeddings(img_arr)
